@@ -14,6 +14,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        buildConfigField("String","AVIATION_EDGE_API_KEY","\"${project.findProperty("AVIATION_EDGE_API_KEY")}\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -38,6 +40,7 @@ android {
     }
     buildFeatures {
         compose = true
+        android.buildFeatures.buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -54,8 +57,10 @@ dependencies {
     implementation(libs.android)     // mapbox sdk
     implementation(libs.maps.compose) // mapbox compose sdk
     implementation(libs.coil.compose) // coil for images
-    implementation(libs.retrofit2.retrofit) // retrofit for fetching api
-    implementation(libs.gson) //gson for serialization
+//    implementation(libs.retrofit2.retrofit) // retrofit for fetching api
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson) // gson serialization
+    implementation(libs.androidx.lifecycle.viewmodel.compose) // viewModel
 
 
     implementation(libs.androidx.core.ktx)
