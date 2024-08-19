@@ -1,4 +1,4 @@
-package com.plavsic.skytrace.model.data
+package com.plavsic.skytrace.features.map.model
 
 
 data class Aircraft(

@@ -1,4 +1,4 @@
-package com.plavsic.skytrace.model.remote
+package com.plavsic.skytrace.common.remote
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

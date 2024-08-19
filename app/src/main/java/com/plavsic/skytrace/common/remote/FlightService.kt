@@ -1,7 +1,7 @@
-package com.plavsic.skytrace.model.remote
+package com.plavsic.skytrace.common.remote
 
 
-import com.plavsic.skytrace.model.data.FlightResponse
+import com.plavsic.skytrace.features.map.model.FlightResponse
 
 import retrofit2.http.GET
 import retrofit2.http.Query
