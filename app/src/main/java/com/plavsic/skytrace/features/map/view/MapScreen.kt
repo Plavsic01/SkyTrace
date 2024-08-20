@@ -1,11 +1,12 @@
 package com.plavsic.skytrace.features.map.view
 
-import android.view.View
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -14,115 +15,118 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapInitOptions
-import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
-import com.mapbox.maps.plugin.animation.MapAnimationOptions
-import com.mapbox.maps.plugin.animation.easeTo
+import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
+import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.viewannotation.geometry
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
 import com.plavsic.skytrace.R
+import com.plavsic.skytrace.features.map.model.FlightResponse
 import com.plavsic.skytrace.features.map.viewmodel.FlightTrackerViewModel
-import kotlin.random.Random
+import com.plavsic.skytrace.utils.UIState
+
 
 @Composable
 fun MapScreen(
-    modifier: Modifier = Modifier,
-    viewModel:FlightTrackerViewModel
+    viewModel:FlightTrackerViewModel = viewModel()
 ) {
 
-    var mapView: MapView? by remember { mutableStateOf(null) }
-    var annotationView: View? by remember { mutableStateOf(null) }
-    val showBottomSheet = remember { mutableStateOf(false) }
-    var currentPoint: Point by remember {
-        mutableStateOf(Point.fromLngLat(20.4606,44.7871)) }
-
-    val initialCameraOptions = CameraOptions.Builder()
-        .center(currentPoint)
-        .zoom(4.0)
-        .pitch(35.0)
-        .build()
+    val state by viewModel.flights
 
 
-    Box(modifier = modifier.fillMaxSize()){
-        AndroidView(
-            modifier = Modifier.fillMaxSize(),
-            factory = {context ->
+    // FLIGH TRACKER VIEW MODEL
 
-                val mapInitOptions = MapInitOptions(
-                    context = context,
-                    cameraOptions = initialCameraOptions
-                )
+    when(state){
+        is UIState.Loading -> {
+            CircularProgressIndicator()
+        }
+        is UIState.Success -> {
+            val flights = (state as UIState.Success<List<FlightResponse>>).data
+            MapBox(flights = flights)
+        }
+        is UIState.Error.NetworkError -> {}
+        is UIState.Error.ServerError -> {}
+        is UIState.Error.UnknownError -> {}
+    }
 
-                MapView(context,mapInitOptions).apply {
-                    this.mapboxMap.loadStyleUri(Style.MAPBOX_STREETS)
-                    val viewAnnotationManager = this.viewAnnotationManager
-                    annotationView = viewAnnotationManager.addViewAnnotation(
-                        resId = R.layout.annotation_view,
-                        options = viewAnnotationOptions {
-                            geometry(currentPoint)
-                        }
-                    )
-                    mapView = this
-                }
+}
 
-            },
-            update = {
-                annotationView?.setOnClickListener {
-                    showBottomSheet.value = true
-                }
+
+@Composable
+fun MapBox(
+    modifier: Modifier = Modifier,
+    flights:List<FlightResponse>
+){
+    MapboxMap(
+        Modifier.fillMaxSize(),
+        mapViewportState = rememberMapViewportState {
+            setCameraOptions {
+                center(Point.fromLngLat(0.0,0.0))
+                zoom(2.0)
             }
+        },
+        style = {
+            MapStyle(style = Style.MAPBOX_STREETS)
+        }
+    ){
+        ShowViewAnnotations(flights = flights)
+    }
+}
+
+@Composable
+fun PlaneViewAnnotation(
+    modifier: Modifier = Modifier,
+    flight:FlightResponse
+) {
+
+    val isClicked = remember { mutableStateOf(false) }
+
+
+    ViewAnnotation(
+        options = viewAnnotationOptions {
+            this.allowOverlap(false)
+            this.geometry(Point.fromLngLat(flight.geography.longitude,flight.geography.latitude))
+        }
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.plane_icon),
+            contentDescription = "plane",
+            modifier = Modifier
+                .size(40.dp)
+                .rotate(flight.geography.direction.toFloat())
+                .clickable {
+                    isClicked.value = !isClicked.value
+                }
         )
 
-        Button(
-            onClick = {
-                val long = Random.nextDouble(0.0,100.0)
-                val lat = Random.nextDouble(0.0,100.0)
-                currentPoint = Point.fromLngLat(long, lat) // New coordinates
-                annotationView?.let {
-                    mapView?.apply {
-                        val cameraOptions = CameraOptions.Builder()
-                            .center(currentPoint)
-                            .zoom(3.0)
-                            .pitch(35.0)
-                            .build()
-//                        this.mapboxMap.setCamera(cameraOptions)
-                        this.mapboxMap.easeTo(
-                            cameraOptions,
-                            MapAnimationOptions.mapAnimationOptions { duration(3_000) }
-                        )
-                    }
-                    mapView?.viewAnnotationManager?.updateViewAnnotation(
-                        view = it,
-                        options = viewAnnotationOptions {
-                            geometry(currentPoint)
-                        }
-                    )
-                }
-            },
-            modifier = Modifier.align(Alignment.BottomCenter)
-        ) {
-            Text("Change Position")
-        }
-
-
-
-        if(showBottomSheet.value){
-            println(currentPoint)
-            PartialBottomSheet(showBottomSheet = showBottomSheet) {
+        if(isClicked.value){
+            val currentPoint = Point.fromLngLat(flight.geography.longitude,flight.geography.latitude)
+            PartialBottomSheet(showBottomSheet = isClicked) {
                 Text(text = "Ovo je avion koji je trenutno na lokaciji Long: " +
-                        "${currentPoint.longitude()} i Lat: ${currentPoint.latitude()}")
+                        "${currentPoint?.longitude()} i Lat: ${currentPoint?.latitude()}")
             }
         }
     }
 }
 
+
+@Composable
+fun ShowViewAnnotations(
+    modifier: Modifier = Modifier,
+    flights:List<FlightResponse>
+) {
+    for(flight in flights){
+        PlaneViewAnnotation(flight = flight)
+    }
+}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -144,3 +148,9 @@ fun PartialBottomSheet(
         content()
     }
 }
+
+
+
+
+
+

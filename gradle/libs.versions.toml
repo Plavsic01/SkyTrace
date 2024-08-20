@@ -1,6 +1,7 @@
 [versions]
 agp = "8.5.2"
 converterGson = "2.9.0"
+hiltAndroid = "2.48"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -11,7 +12,6 @@ activityCompose = "1.9.1"
 composeBom = "2024.06.00"
 android = "11.6.0"
 coilCompose = "2.7.0"
-gson = "2.11.0"
 mapsCompose = "11.6.0"
 retrofit = "2.9.0"
 
@@ -21,6 +21,8 @@ retrofit = "2.9.0"
 [libraries]
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

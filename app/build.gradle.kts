@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -54,11 +56,13 @@ android {
 
 dependencies {
 
+
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
     implementation(libs.android)     // mapbox sdk
     implementation(libs.maps.compose) // mapbox compose sdk
     implementation(libs.coil.compose) // coil for images
-//    implementation(libs.retrofit2.retrofit) // retrofit for fetching api
-    implementation(libs.retrofit)
+    implementation(libs.retrofit) // retrofit for api
     implementation(libs.converter.gson) // gson serialization
     implementation(libs.androidx.lifecycle.viewmodel.compose) // viewModel
 
@@ -79,4 +83,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(kotlin("script-runtime"))
+}
+
+kapt {
+    correctErrorTypes = true
 }

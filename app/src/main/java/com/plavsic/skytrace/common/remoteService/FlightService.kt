@@ -1,7 +1,8 @@
-package com.plavsic.skytrace.common.remote
+package com.plavsic.skytrace.common.remoteService
 
 
-import com.plavsic.skytrace.features.map.model.FlightResponse
+import com.plavsic.skytrace.features.map.dto.FlightResponseDTO
+import retrofit2.Response
 
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -11,7 +12,6 @@ interface FlightService {
     suspend fun getFlights(
         @Query("key") apiKey:String,
         @Query("limit") limit:Int
-    ): List<FlightResponse>
-
+    ): Response<List<FlightResponseDTO>>
 
 }
