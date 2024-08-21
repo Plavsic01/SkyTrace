@@ -5,9 +5,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.plavsic.skytrace.common.repository.FlightTrackerRepository
+import com.plavsic.skytrace.features.map.repository.FlightTrackerRepository
 import com.plavsic.skytrace.features.map.model.FlightResponse
-import com.plavsic.skytrace.utils.UIState
+import com.plavsic.skytrace.utils.resource.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FlightTrackerViewModel @Inject constructor(
-    private val repository:FlightTrackerRepository
+    private val repository: FlightTrackerRepository
 ):ViewModel() {
 
 

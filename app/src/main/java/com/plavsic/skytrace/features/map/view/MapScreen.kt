@@ -31,7 +31,7 @@ import com.mapbox.maps.viewannotation.viewAnnotationOptions
 import com.plavsic.skytrace.R
 import com.plavsic.skytrace.features.map.model.FlightResponse
 import com.plavsic.skytrace.features.map.viewmodel.FlightTrackerViewModel
-import com.plavsic.skytrace.utils.UIState
+import com.plavsic.skytrace.utils.resource.UIState
 
 
 @Composable
@@ -41,8 +41,6 @@ fun MapScreen(
 
     val state by viewModel.flights
 
-
-    // FLIGH TRACKER VIEW MODEL
 
     when(state){
         is UIState.Loading -> {
@@ -66,7 +64,7 @@ fun MapBox(
     flights:List<FlightResponse>
 ){
     MapboxMap(
-        Modifier.fillMaxSize(),
+        modifier.fillMaxSize(),
         mapViewportState = rememberMapViewportState {
             setCameraOptions {
                 center(Point.fromLngLat(0.0,0.0))
@@ -99,7 +97,7 @@ fun PlaneViewAnnotation(
         Icon(
             painter = painterResource(id = R.drawable.plane_icon),
             contentDescription = "plane",
-            modifier = Modifier
+            modifier = modifier
                 .size(40.dp)
                 .rotate(flight.geography.direction.toFloat())
                 .clickable {
@@ -120,7 +118,6 @@ fun PlaneViewAnnotation(
 
 @Composable
 fun ShowViewAnnotations(
-    modifier: Modifier = Modifier,
     flights:List<FlightResponse>
 ) {
     for(flight in flights){

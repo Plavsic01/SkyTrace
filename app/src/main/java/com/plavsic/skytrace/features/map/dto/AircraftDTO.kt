@@ -1,6 +1,5 @@
 package com.plavsic.skytrace.features.map.dto
 
-import com.plavsic.skytrace.features.map.model.Aircraft
 
 data class AircraftDTO(
     val iataCode:String,

@@ -2,6 +2,7 @@ package com.plavsic.skytrace.common.remoteService
 
 
 import com.plavsic.skytrace.features.map.dto.FlightResponseDTO
+import com.plavsic.skytrace.features.schedule.dto.ScheduleResponseDTO
 import retrofit2.Response
 
 import retrofit2.http.GET
@@ -13,5 +14,12 @@ interface FlightService {
         @Query("key") apiKey:String,
         @Query("limit") limit:Int
     ): Response<List<FlightResponseDTO>>
+
+
+    @GET("timetable")
+    suspend fun getSchedules(
+        @Query("key") apiKey:String,
+        @Query("limit") limit:Int
+    ):Response<List<ScheduleResponseDTO>>
 
 }

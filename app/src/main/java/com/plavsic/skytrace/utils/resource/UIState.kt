@@ -1,4 +1,4 @@
-package com.plavsic.skytrace.utils
+package com.plavsic.skytrace.utils.resource
 
 
 sealed class UIState<out T> {

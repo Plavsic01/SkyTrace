@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.plavsic.skytrace.features.map.view.MapScreen
+import com.plavsic.skytrace.features.schedule.view.ScheduleScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -12,10 +13,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MapScreen()
+//            MapScreen()
+            ScheduleScreen()
         }
     }
 }
-
-
 

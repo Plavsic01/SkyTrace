@@ -1,4 +1,4 @@
-package com.plavsic.skytrace.features.map.mappers
+package com.plavsic.skytrace.features.map.mapper
 
 import com.plavsic.skytrace.features.map.dto.AircraftDTO
 import com.plavsic.skytrace.features.map.dto.AirlineDTO
@@ -36,10 +36,6 @@ fun FlightResponse.toDto(): FlightResponseDTO {
 
 fun List<FlightResponse>.toDtoList():List<FlightResponseDTO>{
     return this.map { it.toDto() }
-}
-
-fun List<FlightResponseDTO>.toDomainModelList():List<FlightResponse>{
-    return this.map { it.toDomainModel() }
 }
 
 
