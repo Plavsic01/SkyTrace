@@ -30,8 +30,8 @@ class FlightTrackerViewModel @Inject constructor(
     private fun fetchFlights(){
         viewModelScope.launch {
             _state.value = UIState.Loading
-            delay(5000)
-            val response = repository.getFlights(limit = 1)
+            delay(1000)
+            val response = repository.getFlights(limit = 5)
             _state.value = response
         }
     }

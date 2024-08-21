@@ -57,14 +57,18 @@ android {
 dependencies {
 
 
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    implementation(libs.hilt.android) // DI
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.play.services.maps)
+    kapt(libs.hilt.android.compiler) // DI
     implementation(libs.android)     // mapbox sdk
     implementation(libs.maps.compose) // mapbox compose sdk
     implementation(libs.coil.compose) // coil for images
     implementation(libs.retrofit) // retrofit for api
     implementation(libs.converter.gson) // gson serialization
     implementation(libs.androidx.lifecycle.viewmodel.compose) // viewModel
+    implementation(libs.androidx.navigation.compose) // Navigation
+    implementation(libs.play.services.location)
 
 
     implementation(libs.androidx.core.ktx)
