@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -40,8 +41,12 @@ import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
+import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotationGroup
+import com.mapbox.maps.extension.compose.annotation.generated.withCircleColor
 import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.plugin.animation.MapAnimationOptions
+import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
 import com.plavsic.skytrace.R
 import com.plavsic.skytrace.features.map.model.FlightResponse
 
@@ -52,6 +57,7 @@ import com.plavsic.skytrace.features.map.model.FlightResponse
 fun MapBox(
     modifier: Modifier = Modifier,
     flights:List<FlightResponse>?,
+    mapViewportState: MapViewportState
 ){
 
     val locationPermissionState = rememberPermissionState(
@@ -61,15 +67,6 @@ fun MapBox(
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     val currentLocation = remember { mutableStateOf<Point?>(null) }
-
-
-    val mapViewportState = rememberMapViewportState{
-            setCameraOptions {
-                center(Point.fromLngLat(0.0,0.0))
-                zoom(2.0)
-            }
-        }
-
 
 
     Box(
@@ -92,7 +89,6 @@ fun MapBox(
             mapViewportState = mapViewportState,
             context = context
         )
-
     }
 }
 
@@ -189,3 +185,38 @@ fun PartialBottomSheet(
         content()
     }
 }
+
+
+
+
+//        val lista = listOf(
+//            Point.fromLngLat(0.0,0.0),
+//            Point.fromLngLat(10.0,0.0),
+//            Point.fromLngLat(50.0,0.0),
+//            Point.fromLngLat(70.0,0.0),
+//
+//        )
+
+//        CircleAnnotationGroup(
+//            annotations = lista.map {
+//                CircleAnnotationOptions()
+//                    .withPoint(it)
+//                    .withCircleRadius(10.0)
+//                    .withCircleColor(Color.Cyan)
+//            },
+//            onClick = {
+//                println("STISAO")
+//                true
+//            }
+//        )
+
+//        CircleAnnotation(
+//            point = Point.fromLngLat(0.0, 0.0),
+//            onClick = {
+//                println("STISAO SAM NA CIRCLE")
+//                true
+//            }
+//        ){
+//            circleRadius = 20.0
+//            circleColor = Color.Red
+//        }

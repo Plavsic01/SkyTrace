@@ -12,6 +12,9 @@ interface FlightService {
     @GET("flights")
     suspend fun getFlights(
         @Query("key") apiKey:String,
+        @Query("lat") lat: Double,
+        @Query("lng") lng: Double,
+        @Query("distance") distance:Int,
         @Query("limit") limit:Int
     ): Response<List<FlightResponseDTO>>
 
