@@ -2,7 +2,6 @@ package com.plavsic.skytrace
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +11,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.mapbox.android.core.permissions.PermissionsListener
-import com.mapbox.android.core.permissions.PermissionsManager
 import com.plavsic.skytrace.features.navigation.BottomNavGraph
 import com.plavsic.skytrace.features.navigation.BottomNavItem
 import com.plavsic.skytrace.features.navigation.BottomNavigationBar
@@ -40,9 +37,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
     }
-
 }
 
 

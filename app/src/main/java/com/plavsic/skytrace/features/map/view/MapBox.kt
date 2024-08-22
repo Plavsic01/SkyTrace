@@ -1,129 +1,173 @@
 package com.plavsic.skytrace.features.map.view
 
-import androidx.compose.foundation.clickable
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.mapbox.geojson.Point
 import com.mapbox.maps.Style
+import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
-import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
 import com.mapbox.maps.extension.compose.style.MapStyle
-import com.mapbox.maps.viewannotation.geometry
-import com.mapbox.maps.viewannotation.viewAnnotationOptions
+import com.mapbox.maps.plugin.animation.MapAnimationOptions
 import com.plavsic.skytrace.R
-import com.plavsic.skytrace.features.location.model.Location
 import com.plavsic.skytrace.features.map.model.FlightResponse
 
+
+@OptIn(ExperimentalPermissionsApi::class)
+@SuppressLint("MissingPermission")
 @Composable
 fun MapBox(
     modifier: Modifier = Modifier,
     flights:List<FlightResponse>?,
-    location: Location
 ){
+
+    val locationPermissionState = rememberPermissionState(
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+
+    val context = LocalContext.current
+    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
+    val currentLocation = remember { mutableStateOf<Point?>(null) }
+
+
+    val mapViewportState = rememberMapViewportState{
+            setCameraOptions {
+                center(Point.fromLngLat(0.0,0.0))
+                zoom(2.0)
+            }
+        }
+
+
 
     Box(
         modifier = Modifier.fillMaxSize()
     ){
-        MapboxMap(
-            modifier.fillMaxSize(),
-            mapViewportState = rememberMapViewportState {
-                setCameraOptions {
-                    center(Point.fromLngLat(location.longitude,location.latitude))
-                    zoom(2.0)
-                }
-            },
-            style = {
-                MapStyle(style = Style.MAPBOX_STREETS)
-            }
-        ){
-            if(!flights.isNullOrEmpty()){
-                ShowViewAnnotations(flights = flights)
-            }
-        }
 
-
-        Button(
-            onClick = {},
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 16.dp)
-        ) {
-            Text("Get Current Location")
-        }
-
-
-    }
-
-
-}
-
-
-
-
-@Composable
-fun PlaneViewAnnotation(
-    modifier: Modifier = Modifier,
-    flight: FlightResponse
-) {
-
-    val isClicked = remember { mutableStateOf(false) }
-
-
-    ViewAnnotation(
-        options = viewAnnotationOptions {
-            this.allowOverlap(false)
-            this.geometry(Point.fromLngLat(flight.geography.longitude,flight.geography.latitude))
-        }
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.plane_icon),
-            contentDescription = "plane",
-            modifier = modifier
-                .size(40.dp)
-                .rotate(flight.geography.direction.toFloat())
-                .clickable {
-                    isClicked.value = !isClicked.value
-                }
+        MapBoxView(
+            modifier = modifier,
+            mapViewportState = mapViewportState,
+            flights = flights
         )
 
-        if(isClicked.value){
-            val currentPoint = Point.fromLngLat(flight.geography.longitude,flight.geography.latitude)
-            PartialBottomSheet(showBottomSheet = isClicked) {
-                Text(text = "Ovo je avion koji je trenutno na lokaciji Long: " +
-                        "${currentPoint?.longitude()} i Lat: ${currentPoint?.latitude()}")
-            }
+        LocationButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 120.dp, end = 10.dp),
+            locationPermissionState = locationPermissionState,
+            fusedLocationClient = fusedLocationClient,
+            currentLocation = currentLocation,
+            mapViewportState = mapViewportState,
+            context = context
+        )
+
+    }
+}
+
+@Composable
+fun MapBoxView(
+    modifier: Modifier = Modifier,
+    mapViewportState:MapViewportState,
+    flights:List<FlightResponse>?
+) {
+    MapboxMap(
+        modifier.fillMaxSize(),
+        mapViewportState = mapViewportState,
+        style = {
+            MapStyle(style = Style.MAPBOX_STREETS)
+        }
+    ){
+        if(!flights.isNullOrEmpty()){
+            ShowViewAnnotations(flights = flights)
         }
     }
 }
 
 
+@OptIn(ExperimentalPermissionsApi::class)
+@SuppressLint("MissingPermission")
 @Composable
-fun ShowViewAnnotations(
-    flights:List<FlightResponse>
+fun LocationButton(
+    modifier: Modifier = Modifier,
+    locationPermissionState:PermissionState,
+    fusedLocationClient:FusedLocationProviderClient,
+    currentLocation:MutableState<Point?>,
+    mapViewportState: MapViewportState,
+    context: Context
+
 ) {
-    for(flight in flights){
-        PlaneViewAnnotation(flight = flight)
+    IconButton(
+        onClick = {
+            if(locationPermissionState.status.isGranted){
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    location?.let {
+                        currentLocation.value = Point.fromLngLat(it.longitude, it.latitude)
+                        println(currentLocation)
+
+                        mapViewportState.flyTo(
+                            cameraOptions = cameraOptions {
+                                center(currentLocation.value)
+                                zoom(6.0)
+                            },
+                            animationOptions = MapAnimationOptions.mapAnimationOptions { duration(5000) }
+                        )
+
+                    }
+                }
+            }else if(locationPermissionState.status.shouldShowRationale){
+                locationPermissionState.launchPermissionRequest()
+
+            }else if(!locationPermissionState.status.isGranted){
+                    Toast.makeText(
+                        context,
+                        "Please enable location permissions in Settings",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+        },
+        modifier = modifier
+
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.location),
+            contentDescription = "My location"
+        )
     }
 }
+
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)

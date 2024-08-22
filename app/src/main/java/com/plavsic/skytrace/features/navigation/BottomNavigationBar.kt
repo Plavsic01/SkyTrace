@@ -21,7 +21,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun BottomNavigationBar(
-    modifier: Modifier = Modifier,
     navController: NavHostController,
     items:List<BottomNavItem>
 ) {

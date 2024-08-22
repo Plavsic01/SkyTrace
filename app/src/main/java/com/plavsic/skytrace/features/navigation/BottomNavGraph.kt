@@ -25,7 +25,7 @@ fun BottomNavGraph(
             val flightTrackerViewModel: FlightTrackerViewModel = hiltViewModel()
             val context = LocalContext.current
             val locationUtils = LocationUtils(context)
-            MapScreen(viewModel = flightTrackerViewModel, context = context, locationUtils = locationUtils)
+            MapScreen(viewModel = flightTrackerViewModel) //,context = context, locationUtils = locationUtils
         }
 
         composable(route = BottomNavItem.NearMe.route){

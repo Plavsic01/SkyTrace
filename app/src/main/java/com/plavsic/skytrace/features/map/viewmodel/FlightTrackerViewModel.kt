@@ -23,11 +23,11 @@ class FlightTrackerViewModel @Inject constructor(
     val flights: State<UIState<List<FlightResponse>>> = _state
 
 
-    init {
-        fetchFlights()
-    }
+//    init {
+//        fetchFlights()
+//    }
 
-    private fun fetchFlights(){
+    fun fetchFlights(){
         viewModelScope.launch {
             _state.value = UIState.Loading
             delay(1000)
