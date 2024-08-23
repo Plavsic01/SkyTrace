@@ -3,6 +3,8 @@ package com.plavsic.skytrace.features.map.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -43,10 +45,12 @@ import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotationGroup
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
 import com.mapbox.maps.extension.compose.annotation.generated.withCircleColor
 import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.plugin.animation.MapAnimationOptions
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.plavsic.skytrace.R
 import com.plavsic.skytrace.features.map.model.FlightResponse
 
@@ -98,6 +102,7 @@ fun MapBoxView(
     mapViewportState:MapViewportState,
     flights:List<FlightResponse>?
 ) {
+
     MapboxMap(
         modifier.fillMaxSize(),
         mapViewportState = mapViewportState,
@@ -105,6 +110,7 @@ fun MapBoxView(
             MapStyle(style = Style.MAPBOX_STREETS)
         }
     ){
+
         if(!flights.isNullOrEmpty()){
             ShowViewAnnotations(flights = flights)
         }
@@ -180,43 +186,9 @@ fun PartialBottomSheet(
         sheetState = sheetState,
         onDismissRequest = {
             showBottomSheet.value = false
-        }
+        },
+        containerColor = Color.White
     ) {
         content()
     }
 }
-
-
-
-
-//        val lista = listOf(
-//            Point.fromLngLat(0.0,0.0),
-//            Point.fromLngLat(10.0,0.0),
-//            Point.fromLngLat(50.0,0.0),
-//            Point.fromLngLat(70.0,0.0),
-//
-//        )
-
-//        CircleAnnotationGroup(
-//            annotations = lista.map {
-//                CircleAnnotationOptions()
-//                    .withPoint(it)
-//                    .withCircleRadius(10.0)
-//                    .withCircleColor(Color.Cyan)
-//            },
-//            onClick = {
-//                println("STISAO")
-//                true
-//            }
-//        )
-
-//        CircleAnnotation(
-//            point = Point.fromLngLat(0.0, 0.0),
-//            onClick = {
-//                println("STISAO SAM NA CIRCLE")
-//                true
-//            }
-//        ){
-//            circleRadius = 20.0
-//            circleColor = Color.Red
-//        }

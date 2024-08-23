@@ -20,6 +20,8 @@ import com.mapbox.maps.viewannotation.geometry
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
 import com.plavsic.skytrace.R
 import com.plavsic.skytrace.features.map.model.FlightResponse
+import com.plavsic.skytrace.features.schedule.view.Schedule
+import com.plavsic.skytrace.features.schedule.view.ScheduleView
 
 @Composable
 fun PlaneViewAnnotation(
@@ -47,7 +49,7 @@ fun PlaneViewAnnotation(
             painter = painterResource(id = R.drawable.plane_icon),
             contentDescription = "plane",
             modifier = modifier
-                .size(30.dp)
+                .size(25.dp)
                 .rotate(flight.geography.direction.toFloat()),
             tint = if(!isClicked.value) Color(0xFF1E90FF)  else Color(0xFFDC143C)
         )
@@ -55,8 +57,10 @@ fun PlaneViewAnnotation(
         if(isClicked.value){
             val currentPoint = Point.fromLngLat(flight.geography.longitude,flight.geography.latitude)
             PartialBottomSheet(showBottomSheet = isClicked) {
-                Text(text = "Ovo je avion koji je trenutno na lokaciji Long: " +
-                        "${currentPoint?.longitude()} i Lat: ${currentPoint?.latitude()}")
+                println("FLIGHT: $flight")
+                ScheduleView(flight = flight)
+//                Text(text = "Ovo je avion koji je trenutno na lokaciji Long: " +
+//                        "${currentPoint?.longitude()} i Lat: ${currentPoint?.latitude()}")
             }
         }
     }

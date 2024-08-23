@@ -24,10 +24,6 @@ class FlightTrackerViewModel @Inject constructor(
     val flights: State<UIState<List<FlightResponse>>> = _state
 
 
-//    init {
-//        fetchFlights()
-//    }
-
     fun fetchFlights(center:Point,zoomLevel:Double){
         val radius = calculateRadiusBasedOnZoom(zoomLevel)
 
@@ -38,9 +34,8 @@ class FlightTrackerViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = UIState.Loading
             val response = repository
-                .getFlights(lat,lng,distance,limit = 100)
+                .getFlights(lat,lng,distance,"en-route",limit = 100)
             _state.value = response
-            println("ODGOVOR: $response")
         }
     }
 

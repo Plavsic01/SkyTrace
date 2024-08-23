@@ -71,21 +71,13 @@ fun MapScreen(
 
     }
 
-
-
-//    println(mapViewportState.cameraState?.center)
-//    println(mapViewportState.cameraState?.zoom)
-
-
-    UIState(state = state, mapViewportState = mapViewportState)
-
-
+    MapUIState(state = state, mapViewportState = mapViewportState)
 
 }
 
 
 @Composable
-fun UIState(
+fun MapUIState(
     state:UIState<List<FlightResponse>>,
     mapViewportState:MapViewportState
 ) {

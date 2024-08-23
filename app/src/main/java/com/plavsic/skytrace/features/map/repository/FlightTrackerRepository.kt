@@ -10,6 +10,7 @@ interface FlightTrackerRepository {
         lat:Double,
         lng:Double,
         distance:Int,
+        status:String,
         limit:Int
     ): UIState<List<FlightResponse>>
 }
