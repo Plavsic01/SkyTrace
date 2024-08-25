@@ -6,8 +6,5 @@ data class ScheduleResponse(
     val airline:AirlineDetails,
     val arrival:FlightDirection,
     val departure:FlightDirection,
-    val flight:Flight,
-    val status:String,
-    val type:String
-
+    val flight: Flight
 )

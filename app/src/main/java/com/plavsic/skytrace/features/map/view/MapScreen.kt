@@ -18,6 +18,7 @@ import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportS
 import com.mapbox.maps.extension.compose.rememberMapState
 import com.plavsic.skytrace.features.map.model.FlightResponse
 import com.plavsic.skytrace.features.map.viewmodel.FlightTrackerViewModel
+import com.plavsic.skytrace.features.schedule.viewmodel.ScheduleViewModel
 import com.plavsic.skytrace.utils.resource.UIState
 import kotlinx.coroutines.delay
 import kotlin.math.abs

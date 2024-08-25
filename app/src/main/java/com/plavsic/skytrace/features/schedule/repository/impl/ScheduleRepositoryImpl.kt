@@ -12,11 +12,10 @@ class ScheduleRepositoryImpl(
     private val flightService: FlightService
 ) : ScheduleRepository{
 
-    override suspend fun getSchedules(limit:Int): UIState<List<ScheduleResponse>> {
+    override suspend fun getSchedules(flightNum:String,flightIata:String,status:String): UIState<List<ScheduleResponse>> {
         return try {
             val response = flightService
-                .getSchedules(BuildConfig.AVIATION_EDGE_API_KEY, limit = limit)
-
+                .getSchedules(BuildConfig.AVIATION_EDGE_API_KEY,flightNum,flightIata, status = status)
             if (response.isSuccessful) {
                 val schedules = response.body() ?: emptyList()
                 UIState.Success(schedules.toDomainModelList())

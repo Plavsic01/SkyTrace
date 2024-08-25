@@ -3,6 +3,14 @@ package com.plavsic.skytrace.common.di
 
 import com.google.gson.GsonBuilder
 import com.plavsic.skytrace.common.remoteService.FlightService
+import com.plavsic.skytrace.features.airports.data.local.dao.AirportDAO
+import com.plavsic.skytrace.features.airports.data.local.dao.CityDAO
+import com.plavsic.skytrace.features.airports.data.remote.AirportService
+import com.plavsic.skytrace.features.airports.data.remote.CityService
+import com.plavsic.skytrace.features.airports.repository.AirportRepository
+import com.plavsic.skytrace.features.airports.repository.CityRepository
+import com.plavsic.skytrace.features.airports.repository.impl.AirportRepositoryImpl
+import com.plavsic.skytrace.features.airports.repository.impl.CityRepositoryImpl
 import com.plavsic.skytrace.features.map.repository.FlightTrackerRepository
 import com.plavsic.skytrace.features.map.repository.impl.FlightTrackerRepositoryImpl
 import com.plavsic.skytrace.features.schedule.dto.AirlineDetailsDTO
@@ -25,12 +33,30 @@ object ApiModule {
         .create()
 
     @Provides
-    fun provideApiService():FlightService {
+    fun provideFlightService():FlightService {
         return Retrofit.Builder()
             .baseUrl("https://aviation-edge.com/v2/public/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(FlightService::class.java)
+    }
+
+    @Provides
+    fun provideAirportService():AirportService {
+        return Retrofit.Builder()
+            .baseUrl("https://aviation-edge.com/v2/public/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AirportService::class.java)
+    }
+
+    @Provides
+    fun provideCityService():CityService {
+        return Retrofit.Builder()
+            .baseUrl("https://aviation-edge.com/v2/public/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CityService::class.java)
     }
 
 
@@ -42,6 +68,24 @@ object ApiModule {
     @Provides
     fun provideScheduleRepository(flightService:FlightService): ScheduleRepository {
         return ScheduleRepositoryImpl(flightService)
+    }
+
+    @Provides
+    fun provideAirportRepository(
+        airportDAO: AirportDAO,
+        cityDAO: CityDAO,
+        airportService: AirportService,
+        cityService: CityService
+    ): AirportRepository {
+        return AirportRepositoryImpl(airportDAO,cityDAO,airportService,cityService)
+    }
+
+    @Provides
+    fun provideCityRepository(
+        cityDAO: CityDAO,
+        cityService: CityService
+    ): CityRepository {
+        return CityRepositoryImpl(cityDAO,cityService)
     }
 
 

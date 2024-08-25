@@ -2,10 +2,23 @@ package com.plavsic.skytrace.features.schedule.view
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,22 +29,27 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.plavsic.skytrace.R
+import com.plavsic.skytrace.features.airports.data.local.entity.FlightAirports
 import com.plavsic.skytrace.features.map.model.FlightResponse
-import kotlin.math.abs
+import com.plavsic.skytrace.features.schedule.model.ScheduleResponse
+import com.plavsic.skytrace.utils.conversions.Conversions.convertToDMS
+import com.plavsic.skytrace.utils.conversions.Conversions.convertToKmh
+import com.plavsic.skytrace.utils.conversions.Conversions.formatDate
+import com.plavsic.skytrace.utils.conversions.Conversions.formatTime
 import kotlin.math.round
 
 
 @Composable
 fun ScheduleView(
-    modifier: Modifier = Modifier,
-    flight:FlightResponse
+    flight:FlightResponse,
+    schedules:List<ScheduleResponse>?,
+    flightAirports: FlightAirports?
 ) {
     LazyColumn(
         contentPadding = PaddingValues(bottom = 30.dp)
     ){
         item {
-            Schedule(flight = flight)
-
+            Schedule(flight = flight,schedules = schedules, flightAirports = flightAirports)
         }
     }
 }
@@ -40,36 +58,104 @@ fun ScheduleView(
 @Composable
 fun Schedule(
     modifier: Modifier = Modifier,
-    flight:FlightResponse
+    flight:FlightResponse,
+    schedules:List<ScheduleResponse>?,
+    flightAirports: FlightAirports?
 ) {
     Column(
         modifier = modifier
             .background(Color.White)
             .fillMaxHeight()
     ) {
-        ScheduleTitle()
-        SchedulePlaneCard()
+//        println(schedules?.size)
 
-        ScheduleCard(icon = R.drawable.departure, city="Bucharest",
-            airport = "Henri Coanda International Airporttttttttttt",
-            direction = "DEPARTURE FRI, 23 AUG", code = "OTP",time = "01:25 PM")
+        if(schedules.isNullOrEmpty()){
+//            ScheduleTitle()
+            SchedulePlaneCard()
+            ScheduleCard(icon = R.drawable.departure)
+            ScheduleCard(icon = R.drawable.arrival)
+        }else{
+            ScheduleTitle(
+                departureCity = flightAirports?.departure?.city?.nameCity,
+                arrivalCity = flightAirports?.arrival?.city?.nameCity
+            )
+            SchedulePlaneCard(
+                flightIataNum = schedules[0].flight.iataNumber,
+                airline = schedules[0].airline.name
+            )
+            if(schedules.size == 1) {
+                ScheduleCard(
+                    icon = R.drawable.departure,
+                    city = flightAirports?.departure?.city?.nameCity,
+                    airport = flightAirports?.departure?.airport?.nameAirport,
+                    direction = formatDate(schedules[0].departure.scheduledTime),
+                    code = schedules[0].departure.iataCode,
+                    time = formatTime(schedules[0].departure.scheduledTime),
+                    terminal = schedules[0].departure.terminal,
+                    gate = schedules[0].departure.gate,
+                    baggage = schedules[0].departure.baggage
+                )
 
-        ScheduleCard(icon = R.drawable.arrival, city="Memmingen",
-            airport = "Memmingen Allgau Airport",
-            direction = "ARRIVAL FRI, 23 AUG", code = "FMM", time = "02:45 PM")
+                ScheduleCard(
+                    icon = R.drawable.arrival,
+                    city = flightAirports?.arrival?.city?.nameCity,
+                    airport = flightAirports?.arrival?.airport?.nameAirport,
+                    direction = formatDate(schedules[0].arrival.scheduledTime),
+                    code = schedules[0].arrival.iataCode,
+                    time = formatTime(schedules[0].arrival.scheduledTime),
+                    terminal = schedules[0].arrival.terminal,
+                    gate = schedules[0].arrival.gate,
+                    baggage = schedules[0].arrival.baggage
+                )
+            }else{
+                    ScheduleCard(
+                        icon = R.drawable.departure,
+                        city = flightAirports?.departure?.city?.nameCity,
+                        airport = flightAirports?.departure?.airport?.nameAirport,
+                        direction = formatDate(schedules[0].departure.scheduledTime),
+                        code = schedules[0].departure.iataCode,
+                        time = formatTime(schedules[0].departure.scheduledTime),
+                        terminal = schedules[0].departure.terminal,
+                        gate = schedules[0].departure.gate,
+                        baggage = schedules[0].departure.baggage
+                    )
+
+                    ScheduleCard(
+                        icon = R.drawable.arrival,
+                        city = flightAirports?.arrival?.city?.nameCity,
+                        airport = flightAirports?.arrival?.airport?.nameAirport,
+                        direction = formatDate(schedules[1].arrival.scheduledTime),
+                        code = schedules[1].arrival.iataCode,
+                        time = formatTime(schedules[1].arrival.scheduledTime),
+                        terminal = schedules[1].arrival.terminal,
+                        gate = schedules[1].arrival.gate,
+                        baggage = schedules[1].arrival.baggage
+                    )
+                }
+            }
+        }
 
         GeoTagging(flight = flight)
 
     }
 
-}
-
 
 @Composable
-fun ScheduleTitle(modifier: Modifier = Modifier) {
+fun ScheduleTitle(
+    modifier: Modifier = Modifier,
+    departureCity:String? = null,
+    arrivalCity:String? = null
+) {
+
+    val cities:String = if(!departureCity.isNullOrEmpty() || !arrivalCity.isNullOrEmpty() ){
+        "$departureCity - $arrivalCity"
+    }else{
+        "N/A - N/A"
+    }
+
     Column(modifier = modifier.padding(horizontal = 55.dp, vertical = 65.dp)) {
         Text(
-            text = "Bucharect - Memmingen",
+            text = cities,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             overflow = TextOverflow.Clip,
@@ -95,7 +181,11 @@ fun ScheduleTitle(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun SchedulePlaneCard(modifier: Modifier = Modifier) {
+fun SchedulePlaneCard(
+    modifier: Modifier = Modifier,
+    flightIataNum:String? = null,
+    airline:String? = null
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -124,13 +214,13 @@ fun SchedulePlaneCard(modifier: Modifier = Modifier) {
 
             Column{
                 Text(
-                    text = "W43099",
+                    text = flightIataNum ?: "N/A",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
                 Text(
-                    text = "Wizz Air Malta",
+                    text = airline ?: "N/A",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF00AEEF)
@@ -155,16 +245,16 @@ fun SchedulePlaneCard(modifier: Modifier = Modifier) {
 
 @Composable
 fun ScheduleCard(
-    // terminal:String?
-    // gate:String?
-    // baggage:String?
     modifier: Modifier = Modifier,
     @DrawableRes icon:Int,
-    city:String,
-    direction:String,
-    airport:String,
-    code:String,
-    time:String
+    city:String? = null,
+    direction:String? = null,
+    airport:String? = null,
+    code:String? = null,
+    time:String? = null,
+    terminal:String? = null,
+    gate:String? = null,
+    baggage:String? = null
 
 ) {
     Card(
@@ -195,7 +285,7 @@ fun ScheduleCard(
 
             Column{
                 Text(
-                    text = direction,
+                    text = direction ?: "N/A",
                     fontSize = 12.sp,
                     color = Color.Gray
                 )
@@ -204,14 +294,14 @@ fun ScheduleCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     Text(
-                        text = city,
+                        text = city ?: "N/A",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
 
                     Text(
-                        text = time,
+                        text = time ?: "N/A",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -219,7 +309,7 @@ fun ScheduleCard(
                 }
 
                 Text(
-                    text = airport,
+                    text = airport ?: "N/A",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Gray,
@@ -228,7 +318,7 @@ fun ScheduleCard(
                 )
 
                 Text(
-                    text = code,
+                    text = code ?: "N/A",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF00AEEF)
@@ -259,18 +349,18 @@ fun ScheduleCard(
 
                 Row {
                     Text(
-                        text = "--",
+                        text = terminal ?: "--",
                         fontSize = 14.sp,
                         color = Color.Gray
                     )
                     Text(
-                        text = "--",
+                        text = baggage ?: "--",
                         fontSize = 14.sp,
                         color = Color.Gray,
                         modifier = modifier.padding(horizontal = 65.dp)
                     )
                     Text(
-                        text = "--",
+                        text = gate ?: "--",
                         fontSize = 14.sp,
                         color = Color.Gray,
                         modifier = modifier.padding(horizontal = 5.dp)
@@ -353,25 +443,4 @@ fun EnRouteTag() {
             fontWeight = FontWeight.Bold
         )
     }
-}
-
-
-private fun convertToKmh(speed:Double):Int{
-    return round(speed * 1.852).toInt()
-}
-
-private fun convertToDMS(coordinate: Double, isLatitude: Boolean): String {
-    val direction = if (isLatitude) {
-        if (coordinate >= 0) "N" else "S"
-    } else {
-        if (coordinate >= 0) "E" else "W"
-    }
-
-    val absCoordinate = abs(coordinate)
-    val degrees = absCoordinate.toInt()
-    val minutesFull = (absCoordinate - degrees) * 60
-    val minutes = minutesFull.toInt()
-    val seconds = (minutesFull - minutes) * 60
-
-    return "%s %d°%02d'%07.4f\"".format(direction, degrees, minutes, seconds)
 }

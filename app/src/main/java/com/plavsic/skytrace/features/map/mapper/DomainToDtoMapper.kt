@@ -21,15 +21,15 @@ import com.plavsic.skytrace.features.map.model.System
 
 fun FlightResponse.toDto(): FlightResponseDTO {
     return FlightResponseDTO(
-        aircraft = this.aircraft.toDto(),
-        airline = this.airline.toDto(),
-        arrival = this.arrival.toDto(),
-        departure = this.departure.toDto(),
+//        aircraft = this.aircraft.toDto(),
+//        airline = this.airline.toDto(),
+//        arrival = this.arrival.toDto(),
+//        departure = this.departure.toDto(),
         flight = this.flight.toDto(),
         geography = this.geography.toDto(),
         speed = this.speed.toDto(),
-        status = this.status,
-        system = this.system.toDto()
+//        status = this.status,
+//        system = this.system.toDto()
     )
 }
 
@@ -74,7 +74,6 @@ fun Departure.toDto(): DepartureDTO {
 fun Flight.toDto(): FlightDTO {
     return FlightDTO(
         iataNumber = this.iataNumber,
-        icaoNumber = this.icaoNumber,
         number = this.number
     )
 }

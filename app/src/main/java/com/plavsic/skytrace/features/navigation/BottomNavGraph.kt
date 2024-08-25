@@ -5,10 +5,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.plavsic.skytrace.features.airports.view.AirportScreen
+import com.plavsic.skytrace.features.airports.viewmodel.AirportViewModel
 import com.plavsic.skytrace.features.map.view.MapScreen
 import com.plavsic.skytrace.features.map.viewmodel.FlightTrackerViewModel
-import com.plavsic.skytrace.features.schedule.view.ScheduleScreen
-import com.plavsic.skytrace.features.schedule.viewmodel.ScheduleViewModel
 
 
 @Composable
@@ -25,8 +25,8 @@ fun BottomNavGraph(
         }
 
         composable(route = BottomNavItem.NearMe.route){
-            val scheduleViewModel: ScheduleViewModel = hiltViewModel()
-            ScheduleScreen(viewModel = scheduleViewModel)
+            val airportViewModel:AirportViewModel = hiltViewModel()
+            AirportScreen(viewModel = airportViewModel)
         }
     }
 }

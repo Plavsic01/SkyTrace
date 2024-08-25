@@ -76,7 +76,6 @@ fun MapBox(
     Box(
         modifier = Modifier.fillMaxSize()
     ){
-
         MapBoxView(
             modifier = modifier,
             mapViewportState = mapViewportState,

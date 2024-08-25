@@ -68,8 +68,12 @@ dependencies {
     implementation(libs.converter.gson) // gson serialization
     implementation(libs.androidx.lifecycle.viewmodel.compose) // viewModel
     implementation(libs.androidx.navigation.compose) // Navigation
-    implementation(libs.play.services.location)
-    implementation(libs.accompanist.permissions)
+    implementation(libs.play.services.location) // google location
+    implementation(libs.accompanist.permissions) // permissions library
+
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
 
     implementation(libs.androidx.core.ktx)

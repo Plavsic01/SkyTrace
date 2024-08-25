@@ -5,8 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -14,14 +15,18 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
 import com.mapbox.maps.viewannotation.geometry
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
 import com.plavsic.skytrace.R
 import com.plavsic.skytrace.features.map.model.FlightResponse
-import com.plavsic.skytrace.features.schedule.view.Schedule
+import com.plavsic.skytrace.features.schedule.model.ScheduleResponse
+import com.plavsic.skytrace.features.schedule.view.ScheduleScreen
 import com.plavsic.skytrace.features.schedule.view.ScheduleView
+import com.plavsic.skytrace.features.schedule.viewmodel.ScheduleViewModel
+import com.plavsic.skytrace.utils.resource.UIState
 
 @Composable
 fun PlaneViewAnnotation(
@@ -55,12 +60,8 @@ fun PlaneViewAnnotation(
         )
 
         if(isClicked.value){
-            val currentPoint = Point.fromLngLat(flight.geography.longitude,flight.geography.latitude)
             PartialBottomSheet(showBottomSheet = isClicked) {
-                println("FLIGHT: $flight")
-                ScheduleView(flight = flight)
-//                Text(text = "Ovo je avion koji je trenutno na lokaciji Long: " +
-//                        "${currentPoint?.longitude()} i Lat: ${currentPoint?.latitude()}")
+                ScheduleScreen(flight = flight)
             }
         }
     }
@@ -71,6 +72,7 @@ fun PlaneViewAnnotation(
 fun ShowViewAnnotations(
     flights:List<FlightResponse>
 ) {
+    // probati staviiti unutar LaunchedEffect da mozda asinhrono se podaci prikazuju bez da zabode mapbox
     for(flight in flights){
         PlaneViewAnnotation(flight = flight)
     }

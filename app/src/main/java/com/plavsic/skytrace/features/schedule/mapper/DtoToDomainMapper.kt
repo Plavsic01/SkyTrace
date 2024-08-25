@@ -1,7 +1,6 @@
 package com.plavsic.skytrace.features.schedule.mapper
 
 
-
 import com.plavsic.skytrace.features.map.mapper.toDomainModel
 import com.plavsic.skytrace.features.schedule.dto.AirlineDetailsDTO
 import com.plavsic.skytrace.features.schedule.dto.FlightDirectionDTO
@@ -16,9 +15,7 @@ fun ScheduleResponseDTO.toDomainModel():ScheduleResponse{
         airline = this.airline.toDomainModel(),
         arrival = this.arrival.toDomainModel(),
         departure = this.departure.toDomainModel(),
-        flight = this.flight.toDomainModel(),
-        status = this.status,
-        type = this.type
+        flight = this.flight.toDomainModel()
     )
 }
 
@@ -37,14 +34,13 @@ fun AirlineDetailsDTO.toDomainModel():AirlineDetails{
 
 fun FlightDirectionDTO.toDomainModel():FlightDirection{
     return FlightDirection(
-        actualRunway = this.actualRunway,
-        actualTime = this.actualTime,
         delay = this.delay,
         terminal = this.terminal,
         scheduledTime = this.scheduledTime,
         gate = this.gate,
-        iataCode = this.iataCode,
-        icaoCode = this.icaoCode
+        baggage = this.baggage,
+        iataCode = this.iataCode
 
     )
 }
+

@@ -23,7 +23,9 @@ interface FlightService {
     @GET("timetable")
     suspend fun getSchedules(
         @Query("key") apiKey:String,
-        @Query("limit") limit:Int
+        @Query("flight_num") flightNum:String,
+        @Query("flight_iata") flightIata:String,
+        @Query("status") status:String
     ):Response<List<ScheduleResponseDTO>>
 
 }
