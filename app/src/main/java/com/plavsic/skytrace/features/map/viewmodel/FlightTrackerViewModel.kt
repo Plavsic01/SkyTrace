@@ -24,29 +24,59 @@ class FlightTrackerViewModel @Inject constructor(
     val flights: State<UIState<List<FlightResponse>>> = _state
 
 
-    fun fetchFlights(center:Point,zoomLevel:Double){
-        val radius = calculateRadiusBasedOnZoom(zoomLevel)
+    init {
+        fetchFlights()
+    }
 
-        val lat = center.latitude()
-        val lng = center.longitude()
-        val distance = radius
 
+    private fun fetchFlights(){
         viewModelScope.launch {
             _state.value = UIState.Loading
             val response = repository
-                .getFlights(lat,lng,distance,"en-route",limit = 100)
+                .getFlights("en-route",limit=1000)
             _state.value = response
+            println("SKINILO SE")
         }
     }
 
-    private fun calculateRadiusBasedOnZoom(zoomLevel: Double): Int {
-        return when {
-            zoomLevel > 15 -> 10  // Mali radijus za visoko zumiranje
-            zoomLevel > 10 -> 50  // Srednji radijus za srednje zumiranje
-            zoomLevel > 5 -> 70
-            else -> 10000           // Veliki radijus za malo zumiranje
-        }
-    }
+
+    //    fun fetchFlights(center:Point,zoomLevel:Double){
+//        val radius = calculateRadiusBasedOnZoom(zoomLevel)
+////        val limit = calculateLimitBasedOnZoom(zoomLevel)
+//
+//        val lat = center.latitude()
+//        val lng = center.longitude()
+//        val distance = radius
+//
+//        viewModelScope.launch {
+//            _state.value = UIState.Loading
+//            val response = repository
+//                .getFlights(lat,lng,distance,"en-route")
+//            _state.value = response
+//        }
+//    }
+
+//    private fun calculateRadiusBasedOnZoom(zoomLevel: Double): Int {
+//        return when {
+//            zoomLevel > 15.0 -> 10  // Mali radijus za visoko zumiranje
+//            zoomLevel > 10.0 -> 100  // Srednji radijus za srednje zumiranje
+//            zoomLevel > 5.0 -> 200
+//            zoomLevel > 3.0 -> 400
+//            zoomLevel > 1.0 -> 700
+//            else -> 200          // Veliki radijus za malo zumiranje
+//        }
+//    }
+//
+//
+//    private fun calculateLimitBasedOnZoom(zoomLevel:Double):Int{
+//        return when {
+//            zoomLevel > 15 -> 20
+//            zoomLevel > 10 -> 30
+//            zoomLevel > 5 -> 50
+//            zoomLevel > 2 -> 70
+//            else -> 100
+//        }
+//    }
 
 
 }

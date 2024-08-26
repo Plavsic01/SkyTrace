@@ -37,6 +37,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLngBounds
 import com.mapbox.geojson.Point
 import com.mapbox.maps.Style
 import com.mapbox.maps.dsl.cameraOptions
@@ -47,6 +48,7 @@ import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotationGroup
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
 import com.mapbox.maps.extension.compose.annotation.generated.withCircleColor
+import com.mapbox.maps.extension.compose.rememberMapState
 import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.plugin.animation.MapAnimationOptions
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
@@ -106,14 +108,15 @@ fun MapBoxView(
         modifier.fillMaxSize(),
         mapViewportState = mapViewportState,
         style = {
-            MapStyle(style = Style.MAPBOX_STREETS)
-        }
+            MapStyle(style = Style.OUTDOORS)
+        },
     ){
 
         if(!flights.isNullOrEmpty()){
             ShowViewAnnotations(flights = flights)
         }
     }
+
 }
 
 

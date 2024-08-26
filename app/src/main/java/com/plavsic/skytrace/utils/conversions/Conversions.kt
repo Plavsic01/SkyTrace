@@ -1,9 +1,14 @@
 package com.plavsic.skytrace.utils.conversions
 
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.mapbox.maps.CameraState
+import com.plavsic.skytrace.features.map.model.FlightResponse
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
+import kotlin.math.pow
 import kotlin.math.round
 
 object Conversions {
@@ -31,23 +36,50 @@ object Conversions {
 
 
     fun formatDate(inputDate: String?): String? {
-        // Prvo parsiramo ulazni datum
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ENGLISH)
         val date: Date? = inputDate?.let { inputFormat.parse(it) }
 
-        // Formatiramo datum u željeni oblik
         val outputFormat = SimpleDateFormat("EEE, dd MMM", Locale.ENGLISH)
         return date?.let { outputFormat.format(it) }
     }
 
 
     fun formatTime(inputDate: String?): String? {
-        // Prvo parsiramo ulazni datum
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ENGLISH)
         val date: Date? = inputDate?.let { inputFormat.parse(it) }
 
-        // Formatiramo vreme u AM/PM oblik
+        // Format to AM/PM
         val outputFormat = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
         return date?.let { outputFormat.format(it) }
     }
+
+
+
+    fun getLatLngBoundsFromCameraPosition(cameraState:CameraState): LatLngBounds {
+        // Centar mape
+        val center = cameraState.center
+
+        // Računamo prečnik mape u stepenima na osnovu trenutnog nivoa zumiranja
+        val latitudeSpan = 180.0 / 2.0.pow(cameraState.zoom)
+        val longitudeSpan = 360.0 / 2.0.pow(cameraState.zoom)
+
+        // Odredimo gornji levi i donji desni ugao
+        val northWest =
+            LatLng(center.latitude() + latitudeSpan / 2, center.longitude() - longitudeSpan / 2)
+        val southEast =
+            LatLng(center.latitude() - latitudeSpan / 2, center.longitude() + longitudeSpan / 2)
+
+        return LatLngBounds.Builder()
+            .include(northWest)
+            .include(southEast)
+            .build()
+    }
+
+
+    fun filterPlanesByVisibleRegion(planes:List<FlightResponse>,bounds: LatLngBounds): List<FlightResponse> {
+        return planes.filter { plane ->
+            bounds.contains(LatLng(plane.geography.latitude, plane.geography.longitude))
+        }
+    }
+
 }

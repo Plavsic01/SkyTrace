@@ -204,7 +204,7 @@ fun SchedulePlaneCard(
 
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.plane_icon),
+                painter = painterResource(id = R.drawable.plane_icon_32x32),
                 contentDescription = "plane_icon",
                 modifier = modifier
                     .size(60.dp)

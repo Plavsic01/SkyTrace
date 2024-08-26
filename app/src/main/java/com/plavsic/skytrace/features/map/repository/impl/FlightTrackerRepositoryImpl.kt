@@ -12,11 +12,11 @@ class FlightTrackerRepositoryImpl(
     private val flightService: FlightService
 ) : FlightTrackerRepository {
 
-
-    override suspend fun getFlights(lat:Double,lng:Double,distance:Int,status:String,limit: Int): UIState<List<FlightResponse>> {
+//    lat:Double,lng:Double,distance:Int,
+    override suspend fun getFlights(status:String,limit:Int): UIState<List<FlightResponse>> {
         return try {
             val response = flightService
-                .getFlights(BuildConfig.AVIATION_EDGE_API_KEY,lat,lng,distance,status,limit)
+                .getFlights(BuildConfig.AVIATION_EDGE_API_KEY,status,limit) //  lat,lng,distance
 
             if (response.isSuccessful) {
                 val flights = response.body() ?: emptyList()

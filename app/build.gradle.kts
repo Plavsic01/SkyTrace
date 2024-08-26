@@ -75,6 +75,10 @@ dependencies {
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
+    // OVO MI NE TREBA
+    implementation(libs.androidx.material) // Proveri najnoviju verziju
+    implementation(libs.androidx.material.icons.extended)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
