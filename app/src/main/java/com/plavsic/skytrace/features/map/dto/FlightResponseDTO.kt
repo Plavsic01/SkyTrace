@@ -1,14 +1,10 @@
 package com.plavsic.skytrace.features.map.dto
 
+import com.plavsic.skytrace.features.futureFlights.dto.FlightDTO
+
 
 data class FlightResponseDTO(
-//    val aircraft: AircraftDTO,
-//    val airline: AirlineDTO,
-//    val arrival: ArrivalDTO,
-//    val departure: DepartureDTO,
-    val flight:FlightDTO,
+    val flight: FlightDTO,
     val geography: GeographyDTO,
-    val speed: SpeedDTO,
-//    val status:String,
-//    val system: SystemDTO
+    val speed: SpeedDTO
 )

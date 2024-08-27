@@ -1,6 +1,7 @@
 package com.plavsic.skytrace.features.schedule.mapper
 
 
+import com.plavsic.skytrace.features.futureFlights.mapper.toDomainModel
 import com.plavsic.skytrace.features.map.mapper.toDomainModel
 import com.plavsic.skytrace.features.schedule.dto.AirlineDetailsDTO
 import com.plavsic.skytrace.features.schedule.dto.FlightDirectionDTO

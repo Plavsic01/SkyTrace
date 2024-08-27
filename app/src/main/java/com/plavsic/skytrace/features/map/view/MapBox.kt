@@ -3,24 +3,17 @@ package com.plavsic.skytrace.features.map.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,22 +30,15 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLngBounds
 import com.mapbox.geojson.Point
+import com.mapbox.maps.CameraBoundsOptions
 import com.mapbox.maps.Style
 import com.mapbox.maps.dsl.cameraOptions
+import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
-import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
-import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
-import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotationGroup
-import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
-import com.mapbox.maps.extension.compose.annotation.generated.withCircleColor
-import com.mapbox.maps.extension.compose.rememberMapState
 import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.plugin.animation.MapAnimationOptions
-import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.plavsic.skytrace.R
 import com.plavsic.skytrace.features.map.model.FlightResponse
 
@@ -110,11 +96,19 @@ fun MapBoxView(
         style = {
             MapStyle(style = Style.OUTDOORS)
         },
-    ){
+    ) {
+        MapEffect(Unit) { mapView ->
+            val cameraBoundsOptions = CameraBoundsOptions.Builder()
+                .minZoom(2.5)
+                .maxZoom(7.0)
+                .build()
+            mapView.mapboxMap.setBounds(cameraBoundsOptions)
+        }
 
         if(!flights.isNullOrEmpty()){
             ShowViewAnnotations(flights = flights)
         }
+
     }
 
 }
@@ -138,8 +132,6 @@ fun LocationButton(
                 fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                     location?.let {
                         currentLocation.value = Point.fromLngLat(it.longitude, it.latitude)
-                        println(currentLocation)
-
                         mapViewportState.flyTo(
                             cameraOptions = cameraOptions {
                                 center(currentLocation.value)

@@ -30,14 +30,18 @@ class FlightTrackerViewModel @Inject constructor(
 
 
     private fun fetchFlights(){
+
         viewModelScope.launch {
+            while(true){
             _state.value = UIState.Loading
             val response = repository
-                .getFlights("en-route",limit=1000)
+                .getFlights("en-route",limit=5000)
             _state.value = response
-            println("SKINILO SE")
+            delay(5*60*1000) // Calls API every 5 minutes
+            }
         }
     }
+
 
 
     //    fun fetchFlights(center:Point,zoomLevel:Double){
@@ -66,17 +70,7 @@ class FlightTrackerViewModel @Inject constructor(
 //            else -> 200          // Veliki radijus za malo zumiranje
 //        }
 //    }
-//
-//
-//    private fun calculateLimitBasedOnZoom(zoomLevel:Double):Int{
-//        return when {
-//            zoomLevel > 15 -> 20
-//            zoomLevel > 10 -> 30
-//            zoomLevel > 5 -> 50
-//            zoomLevel > 2 -> 70
-//            else -> 100
-//        }
-//    }
+
 
 
 }

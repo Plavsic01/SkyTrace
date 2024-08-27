@@ -1,4 +1,4 @@
-package com.plavsic.skytrace.features.map.dto
+package com.plavsic.skytrace.features.futureFlights.dto
 
 data class FlightDTO(
     val iataNumber:String,

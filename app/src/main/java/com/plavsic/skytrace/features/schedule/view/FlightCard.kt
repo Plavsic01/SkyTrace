@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -32,6 +33,7 @@ import com.plavsic.skytrace.R
 import com.plavsic.skytrace.features.airports.data.local.entity.FlightAirports
 import com.plavsic.skytrace.features.map.model.FlightResponse
 import com.plavsic.skytrace.features.schedule.model.ScheduleResponse
+import com.plavsic.skytrace.utils.conversions.Conversions.calculateFlightDuration
 import com.plavsic.skytrace.utils.conversions.Conversions.convertToDMS
 import com.plavsic.skytrace.utils.conversions.Conversions.convertToKmh
 import com.plavsic.skytrace.utils.conversions.Conversions.formatDate
@@ -81,7 +83,8 @@ fun Schedule(
             )
             SchedulePlaneCard(
                 flightIataNum = schedules[0].flight.iataNumber,
-                airline = schedules[0].airline.name
+                airline = schedules[0].airline.name,
+                duration = calculateFlightDuration(schedules[0],flightAirports)
             )
             if(schedules.size == 1) {
                 ScheduleCard(
@@ -93,7 +96,8 @@ fun Schedule(
                     time = formatTime(schedules[0].departure.scheduledTime),
                     terminal = schedules[0].departure.terminal,
                     gate = schedules[0].departure.gate,
-                    baggage = schedules[0].departure.baggage
+                    baggage = schedules[0].departure.baggage,
+                    gmt = flightAirports?.departure?.airport?.GMT
                 )
 
                 ScheduleCard(
@@ -105,7 +109,8 @@ fun Schedule(
                     time = formatTime(schedules[0].arrival.scheduledTime),
                     terminal = schedules[0].arrival.terminal,
                     gate = schedules[0].arrival.gate,
-                    baggage = schedules[0].arrival.baggage
+                    baggage = schedules[0].arrival.baggage,
+                    gmt = flightAirports?.arrival?.airport?.GMT
                 )
             }else{
                     ScheduleCard(
@@ -117,7 +122,8 @@ fun Schedule(
                         time = formatTime(schedules[0].departure.scheduledTime),
                         terminal = schedules[0].departure.terminal,
                         gate = schedules[0].departure.gate,
-                        baggage = schedules[0].departure.baggage
+                        baggage = schedules[0].departure.baggage,
+                        gmt = flightAirports?.departure?.city?.GMT
                     )
 
                     ScheduleCard(
@@ -129,7 +135,8 @@ fun Schedule(
                         time = formatTime(schedules[1].arrival.scheduledTime),
                         terminal = schedules[1].arrival.terminal,
                         gate = schedules[1].arrival.gate,
-                        baggage = schedules[1].arrival.baggage
+                        baggage = schedules[1].arrival.baggage,
+                        gmt = flightAirports?.arrival?.city?.GMT
                     )
                 }
             }
@@ -147,7 +154,7 @@ fun ScheduleTitle(
     arrivalCity:String? = null
 ) {
 
-    val cities:String = if(!departureCity.isNullOrEmpty() || !arrivalCity.isNullOrEmpty() ){
+    val cities:String = if(!departureCity.isNullOrEmpty() || !arrivalCity.isNullOrEmpty()){
         "$departureCity - $arrivalCity"
     }else{
         "N/A - N/A"
@@ -169,12 +176,12 @@ fun ScheduleTitle(
         ) {
             EnRouteTag()
 
-            Text(
-                modifier = modifier.padding(start=15.dp),
-                text = "Arrives in 34m • 02:45 PM",
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
+//            Text(
+//                modifier = modifier.padding(start=15.dp),
+//                text = "Arrives in 34m • 02:45 PM",
+//                fontSize = 14.sp,
+//                color = Color.Gray
+//            )
         }
     }
 }
@@ -184,7 +191,8 @@ fun ScheduleTitle(
 fun SchedulePlaneCard(
     modifier: Modifier = Modifier,
     flightIataNum:String? = null,
-    airline:String? = null
+    airline:String? = null,
+    duration:String? = null
 ) {
     Card(
         modifier = modifier
@@ -228,7 +236,7 @@ fun SchedulePlaneCard(
                 Spacer(modifier = modifier.height(8.dp))
 
                 Text(
-                    text = "Duration: 2h 20min",
+                    text = duration ?: "N/A",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Gray
@@ -254,7 +262,8 @@ fun ScheduleCard(
     time:String? = null,
     terminal:String? = null,
     gate:String? = null,
-    baggage:String? = null
+    baggage:String? = null,
+    gmt:String? = null
 
 ) {
     Card(
@@ -366,6 +375,26 @@ fun ScheduleCard(
                         modifier = modifier.padding(horizontal = 5.dp)
                     )
                 }
+
+                Spacer(modifier = modifier.height(4.dp))
+
+                Divider(
+                    color = Color.Gray,
+                    thickness = 0.2.dp
+                )
+
+                Text(
+                    text = if(!gmt.isNullOrEmpty()){
+                        if(gmt.toInt() >= 0){
+                            "GMT+$gmt"
+                        }else{
+                            "GMT-$gmt"
+                        }
+                    }else "N/A",
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    modifier = modifier.padding(horizontal = 5.dp, vertical = 4.dp)
+                )
 
             }
 

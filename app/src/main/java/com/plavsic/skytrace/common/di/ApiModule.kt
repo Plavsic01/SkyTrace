@@ -17,6 +17,7 @@ import com.plavsic.skytrace.features.schedule.dto.AirlineDetailsDTO
 import com.plavsic.skytrace.features.schedule.repository.ScheduleRepository
 import com.plavsic.skytrace.features.schedule.repository.impl.ScheduleRepositoryImpl
 import com.plavsic.skytrace.utils.deserializer.AirlineDetailsDeserializer
+//import com.plavsic.skytrace.utils.deserializer.AirlineDetailsDeserializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,7 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object ApiModule {
 
     val gson = GsonBuilder()
-        .registerTypeAdapter(AirlineDetailsDTO::class.java,AirlineDetailsDeserializer())
+        .registerTypeAdapter(AirlineDetailsDTO::class.java, AirlineDetailsDeserializer())
         .create()
 
     @Provides

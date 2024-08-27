@@ -3,8 +3,14 @@ package com.plavsic.skytrace.utils.conversions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.mapbox.maps.CameraState
+import com.plavsic.skytrace.features.airports.data.local.entity.FlightAirports
 import com.plavsic.skytrace.features.map.model.FlightResponse
+import com.plavsic.skytrace.features.schedule.model.ScheduleResponse
 import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
@@ -53,6 +59,44 @@ object Conversions {
         return date?.let { outputFormat.format(it) }
     }
 
+
+    fun calculateFlightDuration(
+        schedule: ScheduleResponse,
+        flightAirports: FlightAirports?
+    ): String {
+
+        val departureDateTimeString = schedule.departure?.scheduledTime.toString()
+        val arrivalDateTimeString = schedule?.arrival?.scheduledTime.toString()
+
+        val departureZoneId = flightAirports?.departure?.airport?.GMT
+        val arrivalZoneId = flightAirports?.arrival?.airport?.GMT
+
+        if(departureZoneId != null && arrivalZoneId != null){
+
+            val departureZone = if(departureZoneId.toInt() >= 0) "GMT+${departureZoneId}" else "GMT-${departureZoneId}"
+            val arrivalZone = if(departureZoneId.toInt() >= 0) "GMT+${arrivalZoneId}" else "GMT-${arrivalZoneId}"
+
+            // Formatter za parsiranje datuma i vremena iz stringa
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+
+            // Parsiranje stringova u LocalDateTime objekte
+            val departureLocalDateTime = LocalDateTime.parse(departureDateTimeString, formatter)
+            val arrivalLocalDateTime = LocalDateTime.parse(arrivalDateTimeString, formatter)
+
+            // Kreiramo ZonedDateTime objekte sa odgovarajućim vremenskim zonama
+            val departureDateTime = departureLocalDateTime.atZone(ZoneId.of(departureZone))
+            val arrivalDateTime = arrivalLocalDateTime.atZone(ZoneId.of(arrivalZone))
+
+            // Izračunavanje trajanja leta
+            val flightDuration = Duration.between(departureDateTime, arrivalDateTime)
+
+            // Vraćanje trajanja u formatiranom obliku (sati i minuti)
+            return "Duration: ${flightDuration.toHours()}h ${flightDuration.toMinutesPart()}min"
+        }
+
+        return "N/A"
+
+    }
 
 
     fun getLatLngBoundsFromCameraPosition(cameraState:CameraState): LatLngBounds {

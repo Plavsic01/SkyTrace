@@ -1,6 +1,6 @@
 package com.plavsic.skytrace.features.schedule.dto
 
-import com.plavsic.skytrace.features.map.dto.FlightDTO
+import com.plavsic.skytrace.features.futureFlights.dto.FlightDTO
 
 
 data class ScheduleResponseDTO(

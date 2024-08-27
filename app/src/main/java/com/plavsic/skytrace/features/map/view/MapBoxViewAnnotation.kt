@@ -48,7 +48,7 @@ fun PlaneViewAnnotation(
             painter = painterResource(id = R.drawable.plane_icon),
             contentDescription = "plane",
             modifier = modifier
-                .size(20.dp)
+                .size(17.dp)
                 .rotate(flight.geography.direction.toFloat()),
             tint = if(!isClicked.value) Color(0xFF1E90FF)  else Color(0xFFDC143C)
         )
@@ -64,10 +64,54 @@ fun PlaneViewAnnotation(
 
 @Composable
 fun ShowViewAnnotations(
-    flights:List<FlightResponse>
+    flights:List<FlightResponse>,
+//    context: Context
 ) {
     flights.forEach {flight ->
         PlaneViewAnnotation(flight = flight)
     }
-}
 
+//    val flight = remember {
+//        mutableStateOf<FlightResponse?>(null)
+//    }
+//
+//    val isClicked = remember { mutableStateOf(false) }
+
+//    PointAnnotationGroup(
+//        annotations = flights.map {
+//            flight.value = it
+//            val icon = BitmapFactory.decodeResource(context.resources,R.drawable.plane_icon)
+//            PointAnnotationOptions()
+//                .withPoint(Point.fromLngLat(it.geography.longitude,it.geography.latitude))
+//                .withIconImage(icon)
+//        },
+//        annotationConfig = AnnotationConfig(
+//            annotationSourceOptions = AnnotationSourceOptions(
+//                clusterOptions = ClusterOptions(
+//                    textColorExpression = Expression.color(Color.YELLOW),
+//                    textColor = Color.BLACK,
+//                    textSize = 20.0,
+//                    circleRadiusExpression = literal(25.0),
+//                    colorLevels = listOf(
+//                        Pair(100, Color.RED),
+//                        Pair(50, Color.BLUE),
+//                        Pair(0, Color.GREEN)
+//                    )
+//                )
+//            )
+//        ),
+//        onClick = {
+//            isClicked.value = !isClicked.value
+//            true
+//        }
+//    )
+
+//    if(isClicked.value){
+//        PartialBottomSheet(showBottomSheet = isClicked) {
+//            ScheduleScreen(flight = flight.value!!)
+//        }
+//    }
+
+
+
+}
