@@ -7,9 +7,6 @@ import retrofit2.http.Query
 
 interface FlightTrackerRepository {
     suspend fun getFlights(
-//        lat:Double,
-//        lng:Double,
-//        distance:Int,
         status:String,
         limit:Int
     ): UIState<List<FlightResponse>>

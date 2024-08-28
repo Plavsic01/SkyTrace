@@ -3,7 +3,7 @@ package com.plavsic.skytrace.utils.deserializer
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.plavsic.skytrace.features.futureFlights.dto.AirlineDTO
+import com.plavsic.skytrace.features.futureFlight.dto.AirlineDTO
 import com.plavsic.skytrace.features.schedule.dto.AirlineDetailsDTO
 import java.lang.reflect.Type
 

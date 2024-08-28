@@ -2,9 +2,9 @@ package com.plavsic.skytrace.common.di
 
 import android.content.Context
 import androidx.room.Room
-import com.plavsic.skytrace.features.airports.data.local.AppDatabase
-import com.plavsic.skytrace.features.airports.data.local.dao.AirportDAO
-import com.plavsic.skytrace.features.airports.data.local.dao.CityDAO
+import com.plavsic.skytrace.features.airport.data.local.AppDatabase
+import com.plavsic.skytrace.features.airport.data.local.dao.AirportDAO
+import com.plavsic.skytrace.features.airport.data.local.dao.CityDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

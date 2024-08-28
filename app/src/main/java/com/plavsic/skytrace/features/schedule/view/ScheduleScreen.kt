@@ -5,12 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.plavsic.skytrace.features.airports.viewmodel.AirportViewModel
+import com.plavsic.skytrace.features.airport.viewmodel.AirportViewModel
 import com.plavsic.skytrace.features.map.model.FlightResponse
 import com.plavsic.skytrace.features.schedule.model.ScheduleResponse
 import com.plavsic.skytrace.features.schedule.viewmodel.ScheduleViewModel
 import com.plavsic.skytrace.utils.resource.UIState
-import kotlinx.coroutines.delay
 
 
 @Composable

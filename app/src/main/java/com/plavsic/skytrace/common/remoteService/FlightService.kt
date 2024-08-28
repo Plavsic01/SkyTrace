@@ -1,6 +1,7 @@
 package com.plavsic.skytrace.common.remoteService
 
 
+import com.plavsic.skytrace.features.futureFlight.dto.FutureFlightResponseDTO
 import com.plavsic.skytrace.features.map.dto.FlightResponseDTO
 import com.plavsic.skytrace.features.schedule.dto.ScheduleResponseDTO
 import retrofit2.Response
@@ -12,9 +13,6 @@ interface FlightService {
     @GET("flights")
     suspend fun getFlights(
         @Query("key") apiKey:String,
-//        @Query("lat") lat: Double,
-//        @Query("lng") lng: Double,
-//        @Query("distance") distance:Int,
         @Query("status") status:String,
         @Query("limit") limit:Int
     ): Response<List<FlightResponseDTO>>
@@ -27,5 +25,16 @@ interface FlightService {
         @Query("flight_iata") flightIata:String,
         @Query("status") status:String
     ):Response<List<ScheduleResponseDTO>>
+
+
+    @GET("flightsFuture")
+    suspend fun getFutureFlights(
+        @Query("key") apiKey:String,
+        @Query("iataCode") iataCode:String,
+        @Query("type") type:String,
+        @Query("date") date:String,
+        @Query("airline_iata") airlineIata:String? = null,
+        @Query("flight_num") flightNum:String? = null
+    ):Response<List<FutureFlightResponseDTO>>
 
 }

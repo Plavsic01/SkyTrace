@@ -2,6 +2,7 @@ package com.plavsic.skytrace.utils.resource
 
 
 sealed class UIState<out T> {
+    data object Idle : UIState<Nothing>()
     data object Loading : UIState<Nothing>()
     data class Success<out T>(val data: T) : UIState<T>()
     sealed class Error : UIState<Nothing>() {

@@ -43,6 +43,7 @@ fun MapScreen(
     )
 
     when(state){
+        is UIState.Idle -> {}
         is UIState.Loading -> {
             Box(
                 modifier = Modifier.fillMaxSize()
@@ -56,7 +57,7 @@ fun MapScreen(
 
             println(mapViewportState.cameraState?.zoom)
 
-            if(mapViewportState.cameraState?.zoom!! > 4.5){
+            if(mapViewportState.cameraState?.zoom!! > 4.2){
                 LaunchedEffect(mapViewportState.cameraState) {
                     val bounds = Conversions
                         .getLatLngBoundsFromCameraPosition(mapViewportState.cameraState!!)

@@ -3,21 +3,23 @@ package com.plavsic.skytrace.common.di
 
 import com.google.gson.GsonBuilder
 import com.plavsic.skytrace.common.remoteService.FlightService
-import com.plavsic.skytrace.features.airports.data.local.dao.AirportDAO
-import com.plavsic.skytrace.features.airports.data.local.dao.CityDAO
-import com.plavsic.skytrace.features.airports.data.remote.AirportService
-import com.plavsic.skytrace.features.airports.data.remote.CityService
-import com.plavsic.skytrace.features.airports.repository.AirportRepository
-import com.plavsic.skytrace.features.airports.repository.CityRepository
-import com.plavsic.skytrace.features.airports.repository.impl.AirportRepositoryImpl
-import com.plavsic.skytrace.features.airports.repository.impl.CityRepositoryImpl
+import com.plavsic.skytrace.features.airport.data.local.dao.AirportDAO
+import com.plavsic.skytrace.features.airport.data.local.dao.CityDAO
+import com.plavsic.skytrace.features.airport.data.remote.AirportService
+import com.plavsic.skytrace.features.airport.data.remote.CityService
+import com.plavsic.skytrace.features.airport.repository.AirportRepository
+import com.plavsic.skytrace.features.airport.repository.CityRepository
+import com.plavsic.skytrace.features.airport.repository.impl.AirportRepositoryImpl
+import com.plavsic.skytrace.features.airport.repository.impl.CityRepositoryImpl
+import com.plavsic.skytrace.features.futureFlight.repository.FutureFlightRepository
+import com.plavsic.skytrace.features.futureFlight.repository.impl.FutureFlightRepositoryImpl
 import com.plavsic.skytrace.features.map.repository.FlightTrackerRepository
 import com.plavsic.skytrace.features.map.repository.impl.FlightTrackerRepositoryImpl
 import com.plavsic.skytrace.features.schedule.dto.AirlineDetailsDTO
 import com.plavsic.skytrace.features.schedule.repository.ScheduleRepository
 import com.plavsic.skytrace.features.schedule.repository.impl.ScheduleRepositoryImpl
 import com.plavsic.skytrace.utils.deserializer.AirlineDetailsDeserializer
-//import com.plavsic.skytrace.utils.deserializer.AirlineDetailsDeserializer
+
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -69,6 +71,11 @@ object ApiModule {
     @Provides
     fun provideScheduleRepository(flightService:FlightService): ScheduleRepository {
         return ScheduleRepositoryImpl(flightService)
+    }
+
+    @Provides
+    fun provideFutureFlightRepository(flightService:FlightService): FutureFlightRepository {
+        return FutureFlightRepositoryImpl(flightService)
     }
 
     @Provides

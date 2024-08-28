@@ -3,11 +3,12 @@ package com.plavsic.skytrace.utils.conversions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.mapbox.maps.CameraState
-import com.plavsic.skytrace.features.airports.data.local.entity.FlightAirports
+import com.plavsic.skytrace.features.airport.data.local.entity.FlightAirports
 import com.plavsic.skytrace.features.map.model.FlightResponse
 import com.plavsic.skytrace.features.schedule.model.ScheduleResponse
 import java.text.SimpleDateFormat
 import java.time.Duration
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -57,6 +58,15 @@ object Conversions {
         // Format to AM/PM
         val outputFormat = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
         return date?.let { outputFormat.format(it) }
+    }
+
+    fun formatDateFromMiliseconds(milliseconds:Long):String{
+        val instant = Instant.ofEpochMilli(milliseconds)
+        val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
+        val dateTimeFormatted = dateTime.format(formatter)
+
+        return  dateTimeFormatted.split(" ")[0].replace("/","-")
     }
 
 
@@ -125,5 +135,14 @@ object Conversions {
             bounds.contains(LatLng(plane.geography.latitude, plane.geography.longitude))
         }
     }
+
+    fun capitalizeWords(input: String): String {
+        return input.split(" ").joinToString(" ") { word ->
+            word.lowercase().replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase() else it.toString()
+            }
+        }
+    }
+
 
 }

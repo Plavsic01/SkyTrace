@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -30,7 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.plavsic.skytrace.R
-import com.plavsic.skytrace.features.airports.data.local.entity.FlightAirports
+import com.plavsic.skytrace.features.airport.data.local.entity.FlightAirports
 import com.plavsic.skytrace.features.map.model.FlightResponse
 import com.plavsic.skytrace.features.schedule.model.ScheduleResponse
 import com.plavsic.skytrace.utils.conversions.Conversions.calculateFlightDuration
