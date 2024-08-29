@@ -1,5 +1,6 @@
 package com.plavsic.skytrace.features.futureFlight.view
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,50 +49,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.plavsic.skytrace.features.futureFlight.model.FutureFlightResponse
 import com.plavsic.skytrace.features.futureFlight.viewmodel.FutureFlightViewModel
+import com.plavsic.skytrace.features.map.model.FlightResponse
 import com.plavsic.skytrace.utils.WeekDays.Companion.fromDayNumber
+import com.plavsic.skytrace.utils.conversions.Conversions
 import com.plavsic.skytrace.utils.conversions.Conversions.capitalizeWords
 import com.plavsic.skytrace.utils.conversions.Conversions.formatDateFromMiliseconds
 import com.plavsic.skytrace.utils.resource.UIState
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerModal(
-    onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val datePickerState = rememberDatePickerState()
-
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
-                onDismiss()
-            }) {
-                Text("OK")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
-    ) {
-        DatePicker(state = datePickerState)
-    }
-}
+import kotlinx.coroutines.delay
 
 
 @Composable
 fun FutureFlightsScreen(
     viewModel: FutureFlightViewModel
 ) {
+    val context = LocalContext.current
+
     val state by viewModel.futureFlights
 
     FilterScreen{
@@ -105,31 +84,40 @@ fun FutureFlightsScreen(
             )
     }
 
-
-
-    if(state is UIState.Loading){
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ){
-            CircularProgressIndicator()
+    when(state){
+        is UIState.Idle -> {}
+        is UIState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
+                CircularProgressIndicator()
+            }
         }
-
+        is UIState.Success -> {
+            var futureFlights = (state as UIState.Success<List<FutureFlightResponse>>).data
+            futureFlights = futureFlights.filter {
+                it.codeshared == null
+            }
+            Column(
+                modifier = Modifier
+                    .padding(top = 60.dp)
+                    .background(Color.White)
+            ){
+                DisplayFutureFlights(flightList = futureFlights)
+            }
+        }
+        is UIState.Error.NetworkError -> {
+            Toast.makeText(context,"Network Error", Toast.LENGTH_SHORT).show()
+        }
+        is UIState.Error.ServerError -> {
+            Toast.makeText(context,"Server Error", Toast.LENGTH_SHORT).show()
+        }
+        is UIState.Error.UnknownError -> {
+            Toast.makeText(context,"Unknown Error", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    if(state is UIState.Success){
-        var futureFlights = (state as UIState.Success<List<FutureFlightResponse>>).data
-        futureFlights = futureFlights.filter {
-            it.codeshared == null
-        }
-        Column(
-            modifier = Modifier
-                .padding(top = 60.dp)
-                .background(Color.White)
-        ){
-            DisplayFutureFlights(flightList = futureFlights)
-        }
-    }
 
 }
 
@@ -302,7 +290,7 @@ fun FilterDialog(
     var showDatePicker by remember { mutableStateOf(false) }
 
     var date by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf("Departure") }  // Default value
+    var type by remember { mutableStateOf("departure") }  // Default value
     var iataCode by remember { mutableStateOf("") }
     var flightNumber by remember { mutableStateOf("") }
     var airlineIata by remember { mutableStateOf("") }
@@ -362,9 +350,9 @@ fun FilterDialog(
                         expanded = expanded, // replace with proper state management
                         onDismissRequest = { expanded = false }
                     ) {
-                        DropdownMenuItem(text = {Text("Departure")}, onClick = { type = "Departure"; expanded = false })
+                        DropdownMenuItem(text = {Text("Departure")}, onClick = { type = "departure"; expanded = false })
 
-                        DropdownMenuItem(text = {Text("Arrival")}, onClick = { type = "Arrival"; expanded = false })
+                        DropdownMenuItem(text = {Text("Arrival")}, onClick = { type = "arrival"; expanded = false })
                     }
                 }
 
@@ -425,4 +413,33 @@ fun FilterDialog(
     )
 }
 
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePickerModal(
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState()
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = {
+                onDateSelected(datePickerState.selectedDateMillis)
+                onDismiss()
+            }) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
+    }
+}
 

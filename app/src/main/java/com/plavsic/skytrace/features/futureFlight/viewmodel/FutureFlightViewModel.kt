@@ -9,7 +9,6 @@ import com.plavsic.skytrace.features.futureFlight.model.FutureFlightResponse
 import com.plavsic.skytrace.features.futureFlight.repository.FutureFlightRepository
 import com.plavsic.skytrace.utils.resource.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

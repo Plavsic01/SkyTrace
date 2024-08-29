@@ -28,7 +28,6 @@ class FlightTrackerViewModel @Inject constructor(
         fetchFlights()
     }
 
-
     private fun fetchFlights(){
         viewModelScope.launch {
             while(true){

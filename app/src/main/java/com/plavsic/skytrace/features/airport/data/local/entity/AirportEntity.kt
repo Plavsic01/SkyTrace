@@ -17,7 +17,7 @@ import androidx.room.PrimaryKey
 data class AirportEntity(
     @PrimaryKey val codeIataAirport: String,
     val GMT: String,
-    val codeIataCity: String,  // Ovo je referenca na CityEntity
+    val codeIataCity: String,
     val latitudeAirport: Double,
     val longitudeAirport: Double,
     val nameAirport: String,

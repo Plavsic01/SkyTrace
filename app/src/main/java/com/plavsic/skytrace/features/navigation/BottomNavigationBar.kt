@@ -46,6 +46,7 @@ fun BottomNavigationBar(
                     if(currentRoute!! != item.route){
                         navController.navigate(item.route){
                             popUpTo(currentRoute.toString()) {inclusive = true}
+                            launchSingleTop = true
                         }
                     }
 

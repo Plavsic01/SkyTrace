@@ -18,7 +18,7 @@ class AirportRepositoryImpl @Inject constructor(
     private val cityService: CityService
 ):AirportRepository {
 
-    private val api_key = BuildConfig.AVIATION_EDGE_API_KEY
+    private val apiKey = BuildConfig.AVIATION_EDGE_API_KEY
 
 
     override suspend fun getFlightAirports(
@@ -35,18 +35,18 @@ class AirportRepositoryImpl @Inject constructor(
             var airportWithCity = airportDAO.getAirportWithCityByCode(codeIataAirport)
             if (airportWithCity == null) {
                 // Fetching airport via API (returns Response<List<AirportDTO>>)
-                val response = airportService.getAirportByCode(api_key,codeIataAirport)
+                val response = airportService.getAirportByCode(apiKey,codeIataAirport)
 
                 if (response.isSuccessful) {
-                    val airportDtoList = response.body()
-                    if (!airportDtoList.isNullOrEmpty()) {
-                        val airportDTO = airportDtoList[0]
+                    val airportDTOList = response.body()
+                    if (!airportDTOList.isNullOrEmpty()) {
+                        val airportDTO = airportDTOList[0]
                         val airport = airportDTO.toEntity()
 
                         // Checking and fetching city if necessary
                         var city = cityDAO.getCityByCode(airport.codeIataCity)
                         if (city == null) {
-                            val cityResponse = cityService.getCityByCode(api_key,airport.codeIataCity)
+                            val cityResponse = cityService.getCityByCode(apiKey,airport.codeIataCity)
                             if (cityResponse.isSuccessful) {
                                 val cityDTOList = cityResponse.body()
                                 if (!cityDTOList.isNullOrEmpty()) {
