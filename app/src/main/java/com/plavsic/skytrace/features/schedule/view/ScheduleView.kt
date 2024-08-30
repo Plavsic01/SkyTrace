@@ -69,10 +69,9 @@ fun Schedule(
             .background(Color.White)
             .fillMaxHeight()
     ) {
-//        println(schedules?.size)
 
         if(schedules.isNullOrEmpty()){
-//            ScheduleTitle()
+            ScheduleTitle()
             SchedulePlaneCard()
             ScheduleCard(icon = R.drawable.departure)
             ScheduleCard(icon = R.drawable.arrival)
@@ -86,59 +85,8 @@ fun Schedule(
                 airline = schedules[0].airline.name,
                 duration = calculateFlightDuration(schedules[0],flightAirports)
             )
-            if(schedules.size == 1) {
-                ScheduleCard(
-                    icon = R.drawable.departure,
-                    city = flightAirports?.departure?.city?.nameCity,
-                    airport = flightAirports?.departure?.airport?.nameAirport,
-                    direction = formatDate(schedules[0].departure.scheduledTime),
-                    code = schedules[0].departure.iataCode,
-                    time = formatTime(schedules[0].departure.scheduledTime),
-                    terminal = schedules[0].departure.terminal,
-                    gate = schedules[0].departure.gate,
-                    baggage = schedules[0].departure.baggage,
-                    gmt = flightAirports?.departure?.airport?.GMT
-                )
 
-                ScheduleCard(
-                    icon = R.drawable.arrival,
-                    city = flightAirports?.arrival?.city?.nameCity,
-                    airport = flightAirports?.arrival?.airport?.nameAirport,
-                    direction = formatDate(schedules[0].arrival.scheduledTime),
-                    code = schedules[0].arrival.iataCode,
-                    time = formatTime(schedules[0].arrival.scheduledTime),
-                    terminal = schedules[0].arrival.terminal,
-                    gate = schedules[0].arrival.gate,
-                    baggage = schedules[0].arrival.baggage,
-                    gmt = flightAirports?.arrival?.airport?.GMT
-                )
-            }else{
-                    ScheduleCard(
-                        icon = R.drawable.departure,
-                        city = flightAirports?.departure?.city?.nameCity,
-                        airport = flightAirports?.departure?.airport?.nameAirport,
-                        direction = formatDate(schedules[0].departure.scheduledTime),
-                        code = schedules[0].departure.iataCode,
-                        time = formatTime(schedules[0].departure.scheduledTime),
-                        terminal = schedules[0].departure.terminal,
-                        gate = schedules[0].departure.gate,
-                        baggage = schedules[0].departure.baggage,
-                        gmt = flightAirports?.departure?.city?.GMT
-                    )
-
-                    ScheduleCard(
-                        icon = R.drawable.arrival,
-                        city = flightAirports?.arrival?.city?.nameCity,
-                        airport = flightAirports?.arrival?.airport?.nameAirport,
-                        direction = formatDate(schedules[1].arrival.scheduledTime),
-                        code = schedules[1].arrival.iataCode,
-                        time = formatTime(schedules[1].arrival.scheduledTime),
-                        terminal = schedules[1].arrival.terminal,
-                        gate = schedules[1].arrival.gate,
-                        baggage = schedules[1].arrival.baggage,
-                        gmt = flightAirports?.arrival?.city?.GMT
-                    )
-                }
+            ShowScheduleCards(schedules = schedules, flightAirports = flightAirports)
             }
         }
 
@@ -174,14 +122,9 @@ fun ScheduleTitle(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            EnRouteTag()
-
-//            Text(
-//                modifier = modifier.padding(start=15.dp),
-//                text = "Arrives in 34m • 02:45 PM",
-//                fontSize = 14.sp,
-//                color = Color.Gray
-//            )
+            if(!departureCity.isNullOrEmpty() && !arrivalCity.isNullOrEmpty()){
+                EnRouteTag()
+            }
         }
     }
 }
@@ -388,7 +331,7 @@ fun ScheduleCard(
                         if(gmt.toInt() >= 0){
                             "GMT+$gmt"
                         }else{
-                            "GMT-$gmt"
+                            "GMT$gmt"
                         }
                     }else "N/A",
                     fontSize = 14.sp,
@@ -471,5 +414,68 @@ fun EnRouteTag() {
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold
         )
+    }
+}
+
+
+@Composable
+fun ShowScheduleCards(
+    schedules:List<ScheduleResponse>?,
+    flightAirports: FlightAirports?
+    ) {
+    if (schedules != null) {
+        if(schedules.size == 1) {
+            ScheduleCard(
+                icon = R.drawable.departure,
+                city = flightAirports?.departure?.city?.nameCity,
+                airport = flightAirports?.departure?.airport?.nameAirport,
+                direction = formatDate(schedules[0].departure.scheduledTime),
+                code = schedules[0].departure.iataCode,
+                time = formatTime(schedules[0].departure.scheduledTime),
+                terminal = schedules[0].departure.terminal,
+                gate = schedules[0].departure.gate,
+                baggage = schedules[0].departure.baggage,
+                gmt = flightAirports?.departure?.airport?.GMT
+            )
+
+            ScheduleCard(
+                icon = R.drawable.arrival,
+                city = flightAirports?.arrival?.city?.nameCity,
+                airport = flightAirports?.arrival?.airport?.nameAirport,
+                direction = formatDate(schedules[0].arrival.scheduledTime),
+                code = schedules[0].arrival.iataCode,
+                time = formatTime(schedules[0].arrival.scheduledTime),
+                terminal = schedules[0].arrival.terminal,
+                gate = schedules[0].arrival.gate,
+                baggage = schedules[0].arrival.baggage,
+                gmt = flightAirports?.arrival?.airport?.GMT
+            )
+        }else{
+            ScheduleCard(
+                icon = R.drawable.departure,
+                city = flightAirports?.departure?.city?.nameCity,
+                airport = flightAirports?.departure?.airport?.nameAirport,
+                direction = formatDate(schedules[0].departure.scheduledTime),
+                code = schedules[0].departure.iataCode,
+                time = formatTime(schedules[0].departure.scheduledTime),
+                terminal = schedules[0].departure.terminal,
+                gate = schedules[0].departure.gate,
+                baggage = schedules[0].departure.baggage,
+                gmt = flightAirports?.departure?.airport?.GMT
+            )
+
+            ScheduleCard(
+                icon = R.drawable.arrival,
+                city = flightAirports?.arrival?.city?.nameCity,
+                airport = flightAirports?.arrival?.airport?.nameAirport,
+                direction = formatDate(schedules[1].arrival.scheduledTime),
+                code = schedules[1].arrival.iataCode,
+                time = formatTime(schedules[1].arrival.scheduledTime),
+                terminal = schedules[1].arrival.terminal,
+                gate = schedules[1].arrival.gate,
+                baggage = schedules[1].arrival.baggage,
+                gmt = flightAirports?.arrival?.airport?.GMT
+            )
+        }
     }
 }

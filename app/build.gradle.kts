@@ -17,6 +17,7 @@ android {
         versionName = "1.0"
 
         buildConfigField("String","AVIATION_EDGE_API_KEY","\"${project.findProperty("AVIATION_EDGE_API_KEY")}\"")
+        buildConfigField("String","OPEN_WEATHER_MAP_API_KEY","\"${project.findProperty("OPEN_WEATHER_MAP_API_KEY")}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -76,9 +77,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
 
     // OVO MI NE TREBA
-    implementation(libs.androidx.material) // Proveri najnoviju verziju
+//    implementation(libs.androidx.material) // Proveri najnoviju verziju
     implementation(libs.androidx.material.icons.extended)
-
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

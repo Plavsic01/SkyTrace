@@ -60,6 +60,12 @@ object Conversions {
         return date?.let { outputFormat.format(it) }
     }
 
+    fun formatTime(timestamp: Long): String {
+        val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+        val date = java.util.Date(timestamp * 1000)
+        return sdf.format(date)
+    }
+
     fun formatDateFromMiliseconds(milliseconds:Long):String{
         val instant = Instant.ofEpochMilli(milliseconds)
         val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
@@ -83,8 +89,8 @@ object Conversions {
 
         if(departureZoneId != null && arrivalZoneId != null){
 
-            val departureZone = if(departureZoneId.toInt() >= 0) "GMT+${departureZoneId}" else "GMT-${departureZoneId}"
-            val arrivalZone = if(departureZoneId.toInt() >= 0) "GMT+${arrivalZoneId}" else "GMT-${arrivalZoneId}"
+            val departureZone = if(departureZoneId.toInt() >= 0) "GMT+${departureZoneId}" else "GMT${departureZoneId}"
+            val arrivalZone = if(arrivalZoneId.toInt() >= 0) "GMT+${arrivalZoneId}" else "GMT${arrivalZoneId}"
 
             // Formatter za parsiranje datuma i vremena iz stringa
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")

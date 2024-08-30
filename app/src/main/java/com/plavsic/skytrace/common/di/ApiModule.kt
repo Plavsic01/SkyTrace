@@ -3,6 +3,7 @@ package com.plavsic.skytrace.common.di
 
 import com.google.gson.GsonBuilder
 import com.plavsic.skytrace.common.remoteService.FlightService
+import com.plavsic.skytrace.common.remoteService.WeatherService
 import com.plavsic.skytrace.features.airport.data.local.dao.AirportDAO
 import com.plavsic.skytrace.features.airport.data.local.dao.CityDAO
 import com.plavsic.skytrace.features.airport.data.remote.AirportService
@@ -18,6 +19,8 @@ import com.plavsic.skytrace.features.map.repository.impl.FlightTrackerRepository
 import com.plavsic.skytrace.features.schedule.dto.AirlineDetailsDTO
 import com.plavsic.skytrace.features.schedule.repository.ScheduleRepository
 import com.plavsic.skytrace.features.schedule.repository.impl.ScheduleRepositoryImpl
+import com.plavsic.skytrace.features.weather.repository.WeatherRepository
+import com.plavsic.skytrace.features.weather.repository.impl.WeatherRepositoryImpl
 import com.plavsic.skytrace.utils.deserializer.AirlineDetailsDeserializer
 
 import dagger.Module
@@ -62,6 +65,17 @@ object ApiModule {
             .create(CityService::class.java)
     }
 
+    @Provides
+    fun provideWeatherService():WeatherService {
+        return Retrofit.Builder()
+            .baseUrl("https://api.openweathermap.org/data/2.5/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(WeatherService::class.java)
+    }
+
+
+
 
     @Provides
     fun provideFlightTrackerRepository(flightService:FlightService): FlightTrackerRepository {
@@ -96,5 +110,9 @@ object ApiModule {
         return CityRepositoryImpl(cityDAO,cityService)
     }
 
+    @Provides
+    fun provideWeatherRepository(weatherService: WeatherService): WeatherRepository {
+        return WeatherRepositoryImpl(weatherService)
+    }
 
 }

@@ -151,7 +151,7 @@ fun LocationButton(
                         "Please enable location permissions in Settings",
                         Toast.LENGTH_LONG
                     ).show()
-                }
+            }
         },
         modifier = modifier
 

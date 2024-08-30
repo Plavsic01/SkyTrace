@@ -1,10 +1,17 @@
 package com.plavsic.skytrace.features.schedule.view
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.plavsic.skytrace.features.airport.viewmodel.AirportViewModel
@@ -27,28 +34,38 @@ fun ScheduleScreen(
     val isLoadingAirport = airportViewModel.isLoading
     val flightAirports by airportViewModel.airport
 
-
-    // probati promeniti ovo da ne bude onako da se prikaze na milisekund prosli podaci pa tek onda novi
-    // mozda resiti da nemam ovaj LaunchedEffect vec samo da pozivam direktno viewModel.fetchSchedules()
+    var scheduleData by remember {
+        mutableStateOf<List<ScheduleResponse>?>(null)
+    }
 
     LaunchedEffect(flight){
-        viewModel.fetchSchedules(flightNum = flight.flight.number, flightIata = flight.flight.iataNumber)
+        viewModel.fetchSchedules(
+            flightNum = flight.flight.number,
+            flightIata = flight.flight.iataNumber,
+            onSuccess = {
+                scheduleData = it
+                airportViewModel.fetchFlightAirports(scheduleData!![0].departure.iataCode,
+                    scheduleData!![0].arrival.iataCode)
+            }
+        )
     }
+
+    if(!scheduleData.isNullOrEmpty() && !isLoadingAirport){
+        ScheduleView(flight = flight, schedules = scheduleData,flightAirports = flightAirports)
+    }
+
 
     when(state){
         is UIState.Idle -> {}
-        is UIState.Loading -> {}
-        is UIState.Success -> {
-            val schedules = (state as UIState.Success<List<ScheduleResponse>>).data
-            LaunchedEffect(Unit) {
-                airportViewModel.fetchFlightAirports(schedules[0].departure.iataCode,schedules[0].arrival.iataCode)
-            }
-            if(!isLoadingAirport){
-                ScheduleView(flight = flight, schedules = schedules,flightAirports = flightAirports)
-            }else{
+        is UIState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
+            ) {
                 CircularProgressIndicator()
             }
         }
+        is UIState.Success -> {} // Did it in line 48
 
         is UIState.Error.NetworkError -> {
             Toast.makeText(context,"Network Error", Toast.LENGTH_SHORT).show()

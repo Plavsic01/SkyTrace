@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -47,6 +49,8 @@ import com.mapbox.maps.viewannotation.viewAnnotationOptions
 import com.plavsic.skytrace.R
 import com.plavsic.skytrace.features.airport.data.local.entity.AirportWithCity
 import com.plavsic.skytrace.features.airport.viewmodel.AirportViewModel
+import com.plavsic.skytrace.features.map.view.PartialBottomSheet
+import com.plavsic.skytrace.features.weather.view.WeatherScreen
 
 
 @Composable
@@ -61,6 +65,8 @@ fun AirportScreen(
     val isLoadingAirport = viewModel.isLoading
 
     Column {
+
+//        WeatherScreen()
 
         SearchBar{iataCode ->
             icaoCode = iataCode
@@ -173,6 +179,8 @@ fun SearchBar(
 @Composable
 fun AirportWithCityCard(airportAndCity: AirportWithCity) {
 
+    val isClicked = remember { mutableStateOf(false) }
+
     val airportCountryIataCode = if(airportAndCity.airport.nameCountry.isNotEmpty()){
         "${airportAndCity.airport.nameCountry}, ${airportAndCity.airport.codeIataAirport}"
     }else{
@@ -216,12 +224,36 @@ fun AirportWithCityCard(airportAndCity: AirportWithCity) {
             Spacer(modifier = Modifier.height(16.dp))
 
             // City Information
-            Text(
-                text = airportAndCity.city.nameCity,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF0D1B2A)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    modifier = Modifier.padding(top = 10.dp),
+                    text = airportAndCity.city.nameCity,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0D1B2A)
+                )
+
+                Button(onClick = {
+                    isClicked.value = true
+                }) {
+                    Text(
+                        text = "Weather",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+
+                if(isClicked.value){
+                    PartialBottomSheet(showBottomSheet = isClicked) {
+                        WeatherScreen(airportAndCity = airportAndCity)
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "City Code: ${airportAndCity.city.codeIataCity}",
