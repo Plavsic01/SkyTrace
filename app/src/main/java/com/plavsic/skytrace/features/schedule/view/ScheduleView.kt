@@ -39,6 +39,7 @@ import com.plavsic.skytrace.utils.conversions.Conversions.convertToKmh
 import com.plavsic.skytrace.utils.conversions.Conversions.formatDate
 import com.plavsic.skytrace.utils.conversions.Conversions.formatTime
 import kotlin.math.round
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -328,10 +329,10 @@ fun ScheduleCard(
 
                 Text(
                     text = if(!gmt.isNullOrEmpty()){
-                        if(gmt.toInt() >= 0){
-                            "GMT+$gmt"
+                        if(gmt.toDouble() >= 0){
+                            "GMT+${gmt.toDouble().roundToInt()}"
                         }else{
-                            "GMT$gmt"
+                            "GMT${gmt.toDouble().roundToInt()}"
                         }
                     }else "N/A",
                     fontSize = 14.sp,

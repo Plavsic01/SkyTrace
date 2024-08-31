@@ -17,6 +17,7 @@ import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.round
+import kotlin.math.roundToInt
 
 object Conversions {
 
@@ -61,8 +62,8 @@ object Conversions {
     }
 
     fun formatTime(timestamp: Long): String {
-        val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
-        val date = java.util.Date(timestamp * 1000)
+        val sdf = SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+        val date = Date(timestamp * 1000)
         return sdf.format(date)
     }
 
@@ -88,42 +89,42 @@ object Conversions {
         val arrivalZoneId = flightAirports?.arrival?.airport?.GMT
 
         if(departureZoneId != null && arrivalZoneId != null){
+            val roundedDepartureZoneId = departureZoneId.toDouble().roundToInt()
+            val roundedArrivalZoneId = arrivalZoneId.toDouble().roundToInt()
 
-            val departureZone = if(departureZoneId.toInt() >= 0) "GMT+${departureZoneId}" else "GMT${departureZoneId}"
-            val arrivalZone = if(arrivalZoneId.toInt() >= 0) "GMT+${arrivalZoneId}" else "GMT${arrivalZoneId}"
+            val departureZone = if(departureZoneId.toDouble() >= 0) "GMT+${roundedDepartureZoneId}" else "GMT${roundedDepartureZoneId}"
+            val arrivalZone = if(arrivalZoneId.toDouble() >= 0) "GMT+${roundedArrivalZoneId}" else "GMT${roundedArrivalZoneId}"
 
-            // Formatter za parsiranje datuma i vremena iz stringa
+            // Formatter for parsing date and time from string
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
 
-            // Parsiranje stringova u LocalDateTime objekte
+            // Parsing string to LocalDateTime objects
             val departureLocalDateTime = LocalDateTime.parse(departureDateTimeString, formatter)
             val arrivalLocalDateTime = LocalDateTime.parse(arrivalDateTimeString, formatter)
 
-            // Kreiramo ZonedDateTime objekte sa odgovarajućim vremenskim zonama
+            // Creating ZonedDateTime objects with corresponding timezones
             val departureDateTime = departureLocalDateTime.atZone(ZoneId.of(departureZone))
             val arrivalDateTime = arrivalLocalDateTime.atZone(ZoneId.of(arrivalZone))
 
-            // Izračunavanje trajanja leta
+            // Calculating flight duration
             val flightDuration = Duration.between(departureDateTime, arrivalDateTime)
 
-            // Vraćanje trajanja u formatiranom obliku (sati i minuti)
+            // Returning flight duration in format (hours and minutes)
             return "Duration: ${flightDuration.toHours()}h ${flightDuration.toMinutesPart()}min"
         }
-
         return "N/A"
-
     }
 
 
     fun getLatLngBoundsFromCameraPosition(cameraState:CameraState): LatLngBounds {
-        // Centar mape
+        // Centar of map
         val center = cameraState.center
 
-        // Računamo prečnik mape u stepenima na osnovu trenutnog nivoa zumiranja
+        // Calculating map diameter in degrees based on current zoom level
         val latitudeSpan = 180.0 / 2.0.pow(cameraState.zoom)
         val longitudeSpan = 360.0 / 2.0.pow(cameraState.zoom)
 
-        // Odredimo gornji levi i donji desni ugao
+        // Top left and bottom right angle
         val northWest =
             LatLng(center.latitude() + latitudeSpan / 2, center.longitude() - longitudeSpan / 2)
         val southEast =

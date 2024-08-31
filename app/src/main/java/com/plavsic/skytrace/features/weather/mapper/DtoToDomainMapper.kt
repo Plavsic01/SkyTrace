@@ -12,6 +12,7 @@ import com.plavsic.skytrace.features.weather.model.Weather
 import com.plavsic.skytrace.features.weather.model.WeatherInfo
 import com.plavsic.skytrace.features.weather.model.WeatherResponse
 import com.plavsic.skytrace.features.weather.model.Wind
+import kotlin.math.roundToInt
 
 fun WeatherResponseDTO.toDomainModel():WeatherResponse{
     return WeatherResponse(
@@ -45,10 +46,10 @@ fun WeatherDTO.toDomainModel():Weather{
 
 fun WeatherInfoDTO.toDomainModel():WeatherInfo{
     return WeatherInfo(
-        temp = this.temp,
-        feels_like = this.feels_like,
-        temp_min = this.temp_min,
-        temp_max = this.temp_max,
+        temp = this.temp.roundToInt(),
+        feels_like = this.feels_like.roundToInt(),
+        temp_min = this.temp_min.roundToInt(),
+        temp_max = this.temp_max.roundToInt(),
         pressure = this.pressure,
         humidity = this.humidity
     )
