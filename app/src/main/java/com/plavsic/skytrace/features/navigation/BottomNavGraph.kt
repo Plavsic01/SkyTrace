@@ -9,6 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.plavsic.skytrace.features.aircraft.view.AircraftScreen
 import com.plavsic.skytrace.features.airport.view.AirportScreen
 import com.plavsic.skytrace.features.airport.viewmodel.AirportViewModel
 import com.plavsic.skytrace.features.futureFlight.view.FutureFlightsScreen
@@ -48,15 +49,20 @@ fun BottomNavGraph(
         composable(
             route = BottomNavItem.FutureFlights.route,
         ){
-            val futureFlightViewModel: FutureFlightViewModel = hiltViewModel()
-            FutureFlightsScreen(viewModel = futureFlightViewModel)
+
+            FutureFlightsScreen()
         }
 
         composable(
             route = BottomNavItem.Airport.route,
         ){
-            val airportViewModel: AirportViewModel = hiltViewModel()
-            AirportScreen(viewModel = airportViewModel)
+            AirportScreen()
+        }
+
+        composable(
+            route = BottomNavItem.Aircraft.route,
+        ){
+            AircraftScreen()
         }
     }
 }

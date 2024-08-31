@@ -1,10 +1,13 @@
 package com.plavsic.skytrace.features.weather.view
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +18,7 @@ import androidx.compose.material.icons.filled.NightsStay
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
@@ -24,11 +28,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.plavsic.skytrace.features.aircraft.view.AircraftScreen
 import com.plavsic.skytrace.features.airport.data.local.entity.AirportWithCity
 import com.plavsic.skytrace.features.weather.model.SystemInfo
 import com.plavsic.skytrace.features.weather.model.Weather
@@ -36,6 +42,7 @@ import com.plavsic.skytrace.features.weather.model.WeatherInfo
 import com.plavsic.skytrace.features.weather.model.WeatherResponse
 import com.plavsic.skytrace.features.weather.model.Wind
 import com.plavsic.skytrace.features.weather.viewmodel.WeatherViewModel
+import com.plavsic.skytrace.utils.conversions.Conversions.convertUnixToLocalTimeWithOffset
 import com.plavsic.skytrace.utils.conversions.Conversions.formatTime
 import com.plavsic.skytrace.utils.resource.UIState
 
@@ -43,6 +50,7 @@ import com.plavsic.skytrace.utils.resource.UIState
 fun WeatherScreen(
     airportAndCity: AirportWithCity
 ) {
+    val context = LocalContext.current
     val viewModel:WeatherViewModel = hiltViewModel()
 
     val weather = viewModel.weather
@@ -53,13 +61,27 @@ fun WeatherScreen(
 
     when(weather.value){
         is UIState.Idle -> {}
-        is UIState.Loading -> {} // loading top center
+        is UIState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                CircularProgressIndicator()
+            }
+        }
         is UIState.Success -> {
             WeatherBottomSheet(weather = (weather.value as UIState.Success<WeatherResponse>).data)
         }
-        is UIState.Error.NetworkError -> {}
-        is UIState.Error.ServerError -> {}
-        is UIState.Error.UnknownError -> {}
+        is UIState.Error.NetworkError -> {
+            Toast.makeText(context,"Network Error", Toast.LENGTH_SHORT).show()
+        }
+        is UIState.Error.ServerError -> {
+            val error = (weather.value as UIState.Error.ServerError)
+            Toast.makeText(context,"Server Error ${error.code} - ${error.message}", Toast.LENGTH_SHORT).show()
+        }
+        is UIState.Error.UnknownError -> {
+            Toast.makeText(context,"Unknown Error", Toast.LENGTH_SHORT).show()
+        }
     }
 }
 
@@ -74,7 +96,7 @@ fun WeatherBottomSheet(weather: WeatherResponse) {
         TemperatureCard(main = weather.main, weather = weather.weather[0])
         HumidityPressureCard(main = weather.main)
         WindCard(wind = weather.wind, visibility = weather.visibility)
-        SunriseSunsetCard(sys = weather.sys)
+        SunriseSunsetCard(sys = weather.sys,timezone = weather.timezone)
     }
 }
 
@@ -225,7 +247,10 @@ fun WindCard(wind: Wind, visibility: Int) {
 
 
 @Composable
-fun SunriseSunsetCard(sys: SystemInfo) {
+fun SunriseSunsetCard(
+    sys: SystemInfo,
+    timezone:Int
+    ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -260,7 +285,7 @@ fun SunriseSunsetCard(sys: SystemInfo) {
                         contentDescription = "Sunrise",
                     )
                     Text(
-                        text = "Sunrise: ${formatTime(sys.sunrise)}",
+                        text = "Sunrise: ${convertUnixToLocalTimeWithOffset(sys.sunrise,timezone)}",
                         color = Color(0xFF6C757D),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
@@ -276,7 +301,7 @@ fun SunriseSunsetCard(sys: SystemInfo) {
                         contentDescription = "Sunset"
                     )
                     Text(
-                        text = "Sunset: ${formatTime(sys.sunset)}",
+                        text = "Sunset: ${convertUnixToLocalTimeWithOffset(sys.sunset,timezone)}",
                         color = Color(0xFF6C757D),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,

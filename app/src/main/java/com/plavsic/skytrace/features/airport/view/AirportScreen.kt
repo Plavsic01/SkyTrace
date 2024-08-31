@@ -36,10 +36,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
@@ -54,24 +56,24 @@ import com.plavsic.skytrace.features.weather.view.WeatherScreen
 
 
 @Composable
-fun AirportScreen(
-    viewModel:AirportViewModel
-) {
+fun AirportScreen() {
+    val airportViewModel: AirportViewModel = hiltViewModel()
+
     val context = LocalContext.current
 
-    val airport = viewModel.airportWithCity
+    val airport = airportViewModel.airportWithCity
     var icaoCode by remember { mutableStateOf("") }
     var cameraPosition by remember { mutableStateOf(Point.fromLngLat(0.0,0.0)) }
-    val isLoadingAirport = viewModel.isLoading
+    val isLoadingAirport = airportViewModel.isLoading
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column {
 
-//        WeatherScreen()
-
         SearchBar{iataCode ->
+            keyboardController?.hide()
             icaoCode = iataCode
 
-            viewModel.fetchAirport(icaoCode){
+            airportViewModel.fetchAirport(icaoCode){
                 Toast.makeText(context,"NO DATA TO SHOW",Toast.LENGTH_SHORT).show()
             }
         }

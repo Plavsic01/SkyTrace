@@ -1,9 +1,12 @@
 package com.plavsic.skytrace.common.di
 
 
-import com.google.gson.GsonBuilder
 import com.plavsic.skytrace.common.remoteService.FlightService
 import com.plavsic.skytrace.common.remoteService.WeatherService
+import com.plavsic.skytrace.features.aircraft.data.local.dao.AircraftDAO
+import com.plavsic.skytrace.features.aircraft.data.remote.AircraftService
+import com.plavsic.skytrace.features.aircraft.repository.AircraftRepository
+import com.plavsic.skytrace.features.aircraft.repository.impl.AircraftRepositoryImpl
 import com.plavsic.skytrace.features.airport.data.local.dao.AirportDAO
 import com.plavsic.skytrace.features.airport.data.local.dao.CityDAO
 import com.plavsic.skytrace.features.airport.data.remote.AirportService
@@ -16,12 +19,10 @@ import com.plavsic.skytrace.features.futureFlight.repository.FutureFlightReposit
 import com.plavsic.skytrace.features.futureFlight.repository.impl.FutureFlightRepositoryImpl
 import com.plavsic.skytrace.features.map.repository.FlightTrackerRepository
 import com.plavsic.skytrace.features.map.repository.impl.FlightTrackerRepositoryImpl
-import com.plavsic.skytrace.features.schedule.dto.AirlineDetailsDTO
 import com.plavsic.skytrace.features.schedule.repository.ScheduleRepository
 import com.plavsic.skytrace.features.schedule.repository.impl.ScheduleRepositoryImpl
 import com.plavsic.skytrace.features.weather.repository.WeatherRepository
 import com.plavsic.skytrace.features.weather.repository.impl.WeatherRepositoryImpl
-import com.plavsic.skytrace.utils.deserializer.AirlineDetailsDeserializer
 
 import dagger.Module
 import dagger.Provides
@@ -34,15 +35,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 object ApiModule {
 
-    val gson = GsonBuilder()
-        .registerTypeAdapter(AirlineDetailsDTO::class.java, AirlineDetailsDeserializer())
-        .create()
-
     @Provides
     fun provideFlightService():FlightService {
         return Retrofit.Builder()
             .baseUrl("https://aviation-edge.com/v2/public/")
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(FlightService::class.java)
     }
@@ -66,6 +63,15 @@ object ApiModule {
     }
 
     @Provides
+    fun provideAircraftService():AircraftService {
+        return Retrofit.Builder()
+            .baseUrl("https://aviation-edge.com/v2/public/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AircraftService::class.java)
+    }
+
+    @Provides
     fun provideWeatherService():WeatherService {
         return Retrofit.Builder()
             .baseUrl("https://api.openweathermap.org/data/2.5/")
@@ -73,7 +79,6 @@ object ApiModule {
             .build()
             .create(WeatherService::class.java)
     }
-
 
 
 
@@ -113,6 +118,14 @@ object ApiModule {
     @Provides
     fun provideWeatherRepository(weatherService: WeatherService): WeatherRepository {
         return WeatherRepositoryImpl(weatherService)
+    }
+
+    @Provides
+    fun provideAircraftRepository(
+        aircraftDAO: AircraftDAO,
+        aircraftService: AircraftService
+    ): AircraftRepository {
+        return AircraftRepositoryImpl(aircraftDAO,aircraftService)
     }
 
 }

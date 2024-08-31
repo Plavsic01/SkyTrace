@@ -1,7 +1,6 @@
 package com.plavsic.skytrace.features.schedule.mapper
 
 
-import com.plavsic.skytrace.features.futureFlight.mapper.toDomainModel
 import com.plavsic.skytrace.features.map.mapper.toDomainModel
 import com.plavsic.skytrace.features.schedule.dto.AirlineDetailsDTO
 import com.plavsic.skytrace.features.schedule.dto.FlightDirectionDTO
@@ -27,7 +26,6 @@ fun List<ScheduleResponseDTO>.toDomainModelList():List<ScheduleResponse>{
 
 fun AirlineDetailsDTO.toDomainModel():AirlineDetails{
     return AirlineDetails(
-        airline = this.airline.toDomainModel(),
         name = this.name
     )
 }

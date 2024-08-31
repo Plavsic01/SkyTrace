@@ -86,7 +86,8 @@ fun Navigation(modifier: Modifier = Modifier) {
     val navItems = listOf(
         BottomNavItem.Map,
         BottomNavItem.FutureFlights,
-        BottomNavItem.Airport
+        BottomNavItem.Airport,
+        BottomNavItem.Aircraft
     )
 
     Scaffold(

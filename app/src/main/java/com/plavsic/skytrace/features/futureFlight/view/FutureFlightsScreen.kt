@@ -41,7 +41,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,29 +52,28 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.plavsic.skytrace.features.futureFlight.model.FutureFlightResponse
 import com.plavsic.skytrace.features.futureFlight.viewmodel.FutureFlightViewModel
-import com.plavsic.skytrace.features.map.model.FlightResponse
 import com.plavsic.skytrace.utils.WeekDays.Companion.fromDayNumber
-import com.plavsic.skytrace.utils.conversions.Conversions
 import com.plavsic.skytrace.utils.conversions.Conversions.capitalizeWords
-import com.plavsic.skytrace.utils.conversions.Conversions.formatDateFromMiliseconds
+import com.plavsic.skytrace.utils.conversions.Conversions.formatDateFromMilliseconds
 import com.plavsic.skytrace.utils.resource.UIState
-import kotlinx.coroutines.delay
 
 
 @Composable
-fun FutureFlightsScreen(
-    viewModel: FutureFlightViewModel
-) {
+fun FutureFlightsScreen() {
+
+    val futureFlightViewModel: FutureFlightViewModel = hiltViewModel()
+
     val context = LocalContext.current
 
-    val state by viewModel.futureFlights
+    val state by futureFlightViewModel.futureFlights
 
     FilterScreen{
             date,type,iataCode,flightNumber,airlineIata ->
 
-            viewModel.fetchFutureFlights(
+        futureFlightViewModel.fetchFutureFlights(
                 iataCode = iataCode,
                 type = type,
                 date = date,
@@ -111,7 +109,8 @@ fun FutureFlightsScreen(
             Toast.makeText(context,"Network Error", Toast.LENGTH_SHORT).show()
         }
         is UIState.Error.ServerError -> {
-            Toast.makeText(context,"Server Error", Toast.LENGTH_SHORT).show()
+            val error = (state as UIState.Error.ServerError)
+            Toast.makeText(context,"Server Error ${error.code} - ${error.message}",Toast.LENGTH_SHORT).show()
         }
         is UIState.Error.UnknownError -> {
             Toast.makeText(context,"Unknown Error", Toast.LENGTH_SHORT).show()
@@ -130,7 +129,7 @@ fun DisplayFutureFlights(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .padding(8.dp),
+            .padding(bottom = 90.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(flightList) { flight ->
@@ -154,13 +153,10 @@ fun FutureFlightCard(
             containerColor = Color.White
         ),
         modifier = modifier
-            .padding(16.dp)
+            .padding(vertical = 2.dp, horizontal = 16.dp)
             .fillMaxWidth()
     ) {
         Column(modifier = modifier.padding(16.dp)) {
-
-//            futureFlight.codeshared?.airline ?:
-//            futureFlight.codeshared?.flight ?:
 
             val displayedAirline = futureFlight.airline
             val displayedFlight = futureFlight.flight
@@ -219,7 +215,7 @@ fun FutureFlightCard(
                 color = Color.Gray
             )
 
-            Spacer(modifier = modifier.height(16.dp))
+            Spacer(modifier = modifier.height(8.dp))
         }
     }
 }
@@ -313,7 +309,7 @@ fun FilterDialog(
 
                         if(showDatePicker){
                             DatePickerModal(onDateSelected = {
-                                date = formatDateFromMiliseconds(it!!)
+                                date = formatDateFromMilliseconds(it!!)
                             }) {
                                 showDatePicker = !showDatePicker
                             }
@@ -347,7 +343,7 @@ fun FilterDialog(
                     )
 
                     DropdownMenu(
-                        expanded = expanded, // replace with proper state management
+                        expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
                         DropdownMenuItem(text = {Text("Departure")}, onClick = { type = "departure"; expanded = false })

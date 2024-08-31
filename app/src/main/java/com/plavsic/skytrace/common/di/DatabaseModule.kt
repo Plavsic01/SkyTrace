@@ -2,7 +2,9 @@ package com.plavsic.skytrace.common.di
 
 import android.content.Context
 import androidx.room.Room
-import com.plavsic.skytrace.features.airport.data.local.AppDatabase
+import com.plavsic.skytrace.features.aircraft.data.local.AircraftDatabase
+import com.plavsic.skytrace.features.aircraft.data.local.dao.AircraftDAO
+import com.plavsic.skytrace.features.airport.data.local.AirportDatabase
 import com.plavsic.skytrace.features.airport.data.local.dao.AirportDAO
 import com.plavsic.skytrace.features.airport.data.local.dao.CityDAO
 import dagger.Module
@@ -18,23 +20,42 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(
+    fun provideAirportDatabase(
         @ApplicationContext appContext: Context
-    ): AppDatabase {
+    ): AirportDatabase {
         return Room.databaseBuilder(
             appContext,
-            AppDatabase::class.java,
+            AirportDatabase::class.java,
             "airports-db"
         ).build()
     }
 
     @Provides
-    fun provideAirportDao(database: AppDatabase): AirportDAO {
+    fun provideAirportDAO(database: AirportDatabase): AirportDAO {
         return database.airportDAO()
     }
 
     @Provides
-    fun provideCityDao(database: AppDatabase): CityDAO {
+    fun provideCityDAO(database: AirportDatabase): CityDAO {
         return database.cityDAO()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideAircraftDatabase(
+        @ApplicationContext appContext: Context
+    ): AircraftDatabase {
+//        return Room.inMemoryDatabaseBuilder(appContext,AircraftDatabase::class.java).build()
+        return Room.databaseBuilder(
+            appContext,
+            AircraftDatabase::class.java,
+            "aircrafts-db"
+        ).build()
+    }
+
+    @Provides
+    fun provideAircraftDAO(database: AircraftDatabase): AircraftDAO {
+        return database.aircraftDAO()
     }
 }

@@ -15,6 +15,6 @@ interface AirportDAO {
     @Query("SELECT * FROM airports WHERE codeIataAirport = :codeIataAirport")
     suspend fun getAirportWithCityByCode(codeIataAirport: String): AirportWithCity?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAirport(airport: AirportEntity)
 }

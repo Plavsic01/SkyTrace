@@ -8,7 +8,7 @@ import com.plavsic.skytrace.features.airport.data.local.entity.AirportEntity
 import com.plavsic.skytrace.features.airport.data.local.entity.CityEntity
 
 @Database(entities = [AirportEntity::class,CityEntity::class], version = 2)
-abstract class AppDatabase : RoomDatabase() {
+abstract class AirportDatabase : RoomDatabase() {
     abstract fun airportDAO() : AirportDAO
     abstract fun cityDAO() : CityDAO
 }

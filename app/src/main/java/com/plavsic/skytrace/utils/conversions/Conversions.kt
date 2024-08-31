@@ -11,6 +11,7 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
@@ -51,6 +52,21 @@ object Conversions {
         return date?.let { outputFormat.format(it) }
     }
 
+    fun extractDate(dateTime: String): String {
+        return if (dateTime.contains("T")) {
+            dateTime.substringBefore("T")
+        }else{
+            "N/A"
+        }
+    }
+
+    fun convertUnixToLocalTimeWithOffset(unixTime: Long, offsetInSeconds: Int): String {
+        val instant = Instant.ofEpochSecond(unixTime)
+        val zoneOffset = ZoneOffset.ofTotalSeconds(offsetInSeconds)
+        val localDateTime = LocalDateTime.ofInstant(instant, zoneOffset)
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        return localDateTime.format(formatter)
+    }
 
     fun formatTime(inputDate: String?): String? {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ENGLISH)
@@ -60,14 +76,8 @@ object Conversions {
         val outputFormat = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
         return date?.let { outputFormat.format(it) }
     }
-
-    fun formatTime(timestamp: Long): String {
-        val sdf = SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
-        val date = Date(timestamp * 1000)
-        return sdf.format(date)
-    }
-
-    fun formatDateFromMiliseconds(milliseconds:Long):String{
+    
+    fun formatDateFromMilliseconds(milliseconds:Long):String{
         val instant = Instant.ofEpochMilli(milliseconds)
         val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
         val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")

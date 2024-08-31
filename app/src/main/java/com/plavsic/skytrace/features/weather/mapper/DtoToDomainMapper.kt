@@ -21,7 +21,8 @@ fun WeatherResponseDTO.toDomainModel():WeatherResponse{
         main = this.main.toDomainModel(),
         visibility = this.visibility,
         wind = this.wind.toDomainModel(),
-        sys = this.sys.toDomainModel()
+        sys = this.sys.toDomainModel(),
+        timezone = this.timezone
     )
 }
 

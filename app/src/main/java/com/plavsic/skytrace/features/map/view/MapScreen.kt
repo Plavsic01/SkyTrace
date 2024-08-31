@@ -76,7 +76,8 @@ fun MapScreen() {
             Toast.makeText(context,"Network Error", Toast.LENGTH_SHORT).show()
         }
         is UIState.Error.ServerError -> {
-            Toast.makeText(context,"Server Error",Toast.LENGTH_SHORT).show()
+            val error = (state as UIState.Error.ServerError)
+            Toast.makeText(context,"Server Error ${error.code} - ${error.message}",Toast.LENGTH_SHORT).show()
         }
         is UIState.Error.UnknownError -> {
             Toast.makeText(context,"Unknown Error",Toast.LENGTH_SHORT).show()

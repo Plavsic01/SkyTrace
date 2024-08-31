@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AirportViewModel @Inject constructor(
-    private val airportRepository: AirportRepository
+    private val repository: AirportRepository
 ): ViewModel(){
 
     private val _airport:MutableState<FlightAirports?> = mutableStateOf(null)
@@ -31,7 +31,7 @@ class AirportViewModel @Inject constructor(
     fun fetchFlightAirports(departureCode:String,arrivalCode:String) {
         viewModelScope.launch {
             isLoading = true
-            val response = airportRepository
+            val response = repository
                 .getFlightAirports(departureCode=departureCode,arrivalCode=arrivalCode)
             _airport.value = response
             isLoading = false
@@ -43,9 +43,9 @@ class AirportViewModel @Inject constructor(
         codeIataAirport:String,
         onError:() -> Unit
     ){
+        isLoading = true
         viewModelScope.launch {
-            isLoading = true
-            val response = airportRepository
+            val response = repository
                 .getAirportWithCity(codeIataAirport)
 
             // no data

@@ -6,5 +6,6 @@ data class WeatherResponse(
     val main: WeatherInfo,
     val visibility:Int,
     val wind: Wind,
-    val sys:SystemInfo
+    val sys:SystemInfo,
+    val timezone:Int
 )

@@ -9,6 +9,7 @@ import com.plavsic.skytrace.features.weather.model.WeatherResponse
 import com.plavsic.skytrace.features.weather.repository.WeatherRepository
 import com.plavsic.skytrace.utils.resource.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,6 +23,7 @@ class WeatherViewModel @Inject constructor(
 
 
     fun fetchWeatherData(lat:Double,lon:Double){
+        _weather.value = UIState.Loading
         viewModelScope.launch {
             val response = repository.getWeather(lat,lon, units = "metric")
             _weather.value = response
