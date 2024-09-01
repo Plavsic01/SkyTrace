@@ -14,6 +14,14 @@ Here are some screenshots of the application:
 ![Weather Details](screenshots/weather_screen.png)
 ![Aircraft Details](screenshots/aircraft_screen.png)
 
+<img src="screenshots/map_screen.png" alt="Map Screen" width="300"/>
+<img src="screenshots/map_screen_info.png" alt="Flight Details" width="300"/>
+<img src="screenshots/map_screen_geotagging.png" alt="Flight GeoTagging" width="300"/>
+<img src="screenshots/future_flights_screen.png" alt="Future Flights" width="300"/>
+<img src="screenshots/airport_screen.png" alt="Airport Details" width="300"/>
+<img src="screenshots/weather_screen.png" alt="Weather Details" width="300"/>
+<img src="screenshots/aircraft_screen.png" alt="Aircraft Details" width="300"/>
+
 ## Technologies Used
 
 - **Kotlin**: The primary programming language for developing the app.
