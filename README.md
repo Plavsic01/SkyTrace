@@ -6,14 +6,6 @@
 
 Here are some screenshots of the application:
 
-![Main Screen](screenshots/map_screen.png)
-![Flight Details](screenshots/map_screen_info.png)
-![Flight GeoTagging](screenshots/map_screen_geotagging.png)
-![Future Flights](screenshots/future_flights_screen.png)
-![Airport Details](screenshots/airport_screen.png)
-![Weather Details](screenshots/weather_screen.png)
-![Aircraft Details](screenshots/aircraft_screen.png)
-
 <img src="screenshots/map_screen.png" alt="Map Screen" width="300"/>
 <img src="screenshots/map_screen_info.png" alt="Flight Details" width="300"/>
 <img src="screenshots/map_screen_geotagging.png" alt="Flight GeoTagging" width="300"/>
