@@ -74,7 +74,7 @@ fun AirportScreen() {
             icaoCode = iataCode
 
             airportViewModel.fetchAirport(icaoCode){
-                Toast.makeText(context,"NO DATA TO SHOW",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,"Error - No data to show!",Toast.LENGTH_SHORT).show()
             }
         }
 

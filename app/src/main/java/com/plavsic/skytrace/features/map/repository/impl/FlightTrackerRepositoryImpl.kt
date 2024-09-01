@@ -21,7 +21,7 @@ class FlightTrackerRepositoryImpl(
                 val flights = response.body() ?: emptyList()
                 UIState.Success(flights.toDomainModelList())
             }else{
-                when(response.code()){
+                return when(response.code()){
                     404 -> UIState.Error.ServerError(response.code(),"Resource not found")
                     429 -> UIState.Error.ServerError(response.code(),"Too many requests")
                     500 -> UIState.Error.ServerError(response.code(),"Server error")

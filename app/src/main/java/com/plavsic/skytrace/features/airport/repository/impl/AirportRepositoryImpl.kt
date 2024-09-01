@@ -62,7 +62,7 @@ class AirportRepositoryImpl @Inject constructor(
                         airportWithCity = airportDAO.getAirportWithCityByCode(codeIataAirport)
                     }
                 }
-                else { // if response is not successful -> MAYBE IMPLEMENT
+                else {
                     return null
                 }
             }

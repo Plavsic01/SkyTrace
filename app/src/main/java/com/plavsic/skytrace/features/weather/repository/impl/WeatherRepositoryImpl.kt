@@ -19,10 +19,9 @@ class WeatherRepositoryImpl @Inject constructor(
                 .getWeather(BuildConfig.OPEN_WEATHER_MAP_API_KEY, lat, lon,units)
 
             if (response.isSuccessful) {
-                response.body()
                 UIState.Success(response.body()!!.toDomainModel())
             }else{
-                when(response.code()){
+                return when(response.code()){
                     404 -> UIState.Error.ServerError(response.code(),"Resource not found")
                     429 -> UIState.Error.ServerError(response.code(),"Too many requests")
                     500 -> UIState.Error.ServerError(response.code(),"Server error")
