@@ -19,14 +19,14 @@ class AircraftViewModel @Inject constructor(
     private val repository: AircraftRepository
 ) : ViewModel(){
 
-    private val _aircrafts: MutableState<UIState<List<AircraftEntity>>> = mutableStateOf(UIState.Idle)
-    val aircrafts: State<UIState<List<AircraftEntity>>> = _aircrafts
+    private val _aircraft: MutableState<UIState<List<AircraftEntity>>> = mutableStateOf(UIState.Idle)
+    val aircraft: State<UIState<List<AircraftEntity>>> = _aircraft
 
-     fun fetchAircrafts(){
-         _aircrafts.value = UIState.Loading
+     fun fetchAircraft(){
+         _aircraft.value = UIState.Loading
         viewModelScope.launch {
             val response = repository.getAircrafts()
-            _aircrafts.value = response
+            _aircraft.value = response
         }
     }
 

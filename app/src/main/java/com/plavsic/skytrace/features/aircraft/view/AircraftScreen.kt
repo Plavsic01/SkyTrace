@@ -64,7 +64,7 @@ fun AircraftScreen() {
 
     val context = LocalContext.current
 
-    val aircrafts = viewModel.aircrafts
+    val aircraft = viewModel.aircraft
 
     val isSortedAscending = remember { mutableStateOf(true) }
     val showDialog = remember { mutableStateOf(false) }
@@ -77,10 +77,10 @@ fun AircraftScreen() {
 
 
     LaunchedEffect(Unit) {
-        viewModel.fetchAircrafts()
+        viewModel.fetchAircraft()
     }
 
-    when(aircrafts.value){
+    when(aircraft.value){
         is UIState.Idle -> {}
         is UIState.Loading -> {
             Box(
@@ -90,29 +90,29 @@ fun AircraftScreen() {
             }
         }
         is UIState.Success -> {
-            val aircraftsData = (aircrafts.value as UIState.Success<List<AircraftEntity>>).data
+            val aircraftDataList = (aircraft.value as UIState.Success<List<AircraftEntity>>).data
 
-            val filteredAircrafts = aircraftsData.filter { aircraft ->
+            val filteredAircraft = aircraftDataList.filter { aircraftData ->
                 // There are some planes with 2016 age - error in API (Filter them)
-                val wrongDate = aircraft.planeAge.length == 2
+                val wrongDate = aircraftData.planeAge.length == 2
 
                 // Filter for years (from-to)
-                val ageMatches = (minAge.value.isEmpty() || (aircraft.planeAge.toIntOrNull() ?: 0) >= (minAge.value.toIntOrNull() ?: 0)) &&
-                        (maxAge.value.isEmpty() || (aircraft.planeAge.toIntOrNull() ?: 0) <= (maxAge.value.toIntOrNull() ?: 0))
+                val ageMatches = (minAge.value.isEmpty() || (aircraftData.planeAge.toIntOrNull() ?: 0) >= (minAge.value.toIntOrNull() ?: 0)) &&
+                        (maxAge.value.isEmpty() || (aircraftData.planeAge.toIntOrNull() ?: 0) <= (maxAge.value.toIntOrNull() ?: 0))
 
 
                 val statusMatches = if (statusFilter.value.isNotEmpty()) {
-                    aircraft.planeStatus.equals(statusFilter.value, ignoreCase = true)
+                    aircraftData.planeStatus.equals(statusFilter.value, ignoreCase = true)
                 } else true
 
                 // Filter for model
                 val modelMatches = if (modelFilter.value.isNotEmpty()) {
-                    aircraft.airplaneIataType.contains(modelFilter.value, ignoreCase = true)
+                    aircraftData.airplaneIataType.contains(modelFilter.value, ignoreCase = true)
                 } else true
 
                 // Filter for num of engines
                 val enginesCountMatches = if (enginesCountFilter.value.isNotEmpty()) {
-                    aircraft.enginesCount == enginesCountFilter.value
+                    aircraftData.enginesCount == enginesCountFilter.value
                 } else true
 
                 // Returns true if aircraft has all filters set to true
@@ -120,18 +120,18 @@ fun AircraftScreen() {
             }
 
             // Sorting aircrafts by age
-            val sortedAircrafts = remember(filteredAircrafts, isSortedAscending.value) {
+            val sortedAircraft = remember(filteredAircraft, isSortedAscending.value) {
                 if (isSortedAscending.value) {
-                    filteredAircrafts.sortedBy { it.planeAge.toIntOrNull() ?: 0 }.toList()
+                    filteredAircraft.sortedBy { it.planeAge.toIntOrNull() ?: 0 }.toList()
                 } else {
-                    filteredAircrafts.sortedByDescending { it.planeAge.toIntOrNull() ?: 0 }.toList()
+                    filteredAircraft.sortedByDescending { it.planeAge.toIntOrNull() ?: 0 }.toList()
                 }
             }
 
             AircraftView(
                 showDialog = showDialog,
                 isSortedAscending = isSortedAscending,
-                aircrafts=sortedAircrafts,
+                aircraft=sortedAircraft,
                 minAge = minAge,
                 maxAge = maxAge,
                 statusFilter = statusFilter,
@@ -144,7 +144,7 @@ fun AircraftScreen() {
             Toast.makeText(context,"Network Error", Toast.LENGTH_SHORT).show()
         }
         is UIState.Error.ServerError -> {
-            val error = (aircrafts.value as UIState.Error.ServerError)
+            val error = (aircraft.value as UIState.Error.ServerError)
             Toast.makeText(context,"Server Error ${error.code} - ${error.message}", Toast.LENGTH_SHORT).show()
         }
         is UIState.Error.UnknownError -> {
@@ -162,7 +162,7 @@ fun AircraftView(
     modifier:Modifier = Modifier,
     isSortedAscending:MutableState<Boolean>,
     showDialog:MutableState<Boolean>,
-    aircrafts:List<AircraftEntity>,
+    aircraft:List<AircraftEntity>,
     minAge:MutableState<String>,
     maxAge:MutableState<String>,
     statusFilter:MutableState<String>,
@@ -191,7 +191,7 @@ fun AircraftView(
         },
         content = {
             Column(modifier = modifier.padding(top = 50.dp)) {
-                AircraftList(aircrafts = aircrafts)
+                AircraftList(aircraft = aircraft)
             }
             if(showDialog.value){
                 FilterDialog(
@@ -230,7 +230,7 @@ fun FilterDialog(
 
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        title = { Text("Filter Aircrafts") },
+        title = { Text("Filter Aircraft") },
         text = {
             Column {
                 OutlinedTextField(
@@ -402,13 +402,13 @@ fun InfoRow(label: String, value: String) {
 
 
 @Composable
-fun AircraftList(aircrafts: List<AircraftEntity>) {
+fun AircraftList(aircraft: List<AircraftEntity>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 90.dp),
     ) {
-        items(aircrafts) { aircraft ->
+        items(aircraft) { aircraft ->
             AircraftCard(aircraft = aircraft)
         }
     }
