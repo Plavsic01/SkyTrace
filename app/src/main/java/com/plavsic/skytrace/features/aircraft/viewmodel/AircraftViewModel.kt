@@ -25,7 +25,7 @@ class AircraftViewModel @Inject constructor(
      fun fetchAircraft(){
          _aircraft.value = UIState.Loading
         viewModelScope.launch {
-            val response = repository.getAircrafts()
+            val response = repository.getAircraft()
             _aircraft.value = response
         }
     }

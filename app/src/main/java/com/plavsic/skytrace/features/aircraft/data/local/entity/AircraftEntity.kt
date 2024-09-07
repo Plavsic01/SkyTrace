@@ -3,7 +3,7 @@ package com.plavsic.skytrace.features.aircraft.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "aircrafts")
+@Entity(tableName = "aircraft")
 data class AircraftEntity(
     @PrimaryKey val airplaneId: Int,
     val airplaneIataType: String,

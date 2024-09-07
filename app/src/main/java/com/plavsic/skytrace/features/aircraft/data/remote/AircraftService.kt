@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface AircraftService {
     @GET("airplaneDatabase")
-    suspend fun getAircrafts(
+    suspend fun getAircraft(
         @Query("key") apiKey:String
     ):Response<List<AircraftDTO>>
 }

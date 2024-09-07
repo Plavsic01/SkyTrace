@@ -5,5 +5,5 @@ import com.plavsic.skytrace.utils.resource.UIState
 
 interface AircraftRepository {
 
-    suspend fun getAircrafts():UIState<List<AircraftEntity>>
+    suspend fun getAircraft():UIState<List<AircraftEntity>>
 }

@@ -175,7 +175,7 @@ fun AircraftView(
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = Color.White
                 ),
-                title = { Text("Aircrafts") },
+                title = { Text("Aircraft") },
                 actions = {
                     IconButton(onClick = {
                         isSortedAscending.value = !isSortedAscending.value

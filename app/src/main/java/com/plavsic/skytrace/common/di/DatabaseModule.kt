@@ -50,7 +50,7 @@ object DatabaseModule {
         return Room.databaseBuilder(
             appContext,
             AircraftDatabase::class.java,
-            "aircrafts-db"
+            "aircraft-db"
         ).build()
     }
 

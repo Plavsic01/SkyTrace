@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.plavsic.skytrace.features.aircraft.data.local.dao.AircraftDAO
 import com.plavsic.skytrace.features.aircraft.data.local.entity.AircraftEntity
 
-@Database(entities = [AircraftEntity::class], version = 3)
+@Database(entities = [AircraftEntity::class], version = 4)
 abstract class AircraftDatabase : RoomDatabase() {
     abstract fun aircraftDAO() : AircraftDAO
 }

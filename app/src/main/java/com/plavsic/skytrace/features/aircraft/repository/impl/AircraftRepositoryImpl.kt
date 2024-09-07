@@ -14,19 +14,18 @@ class AircraftRepositoryImpl @Inject constructor(
     private val aircraftDAO: AircraftDAO,
     private val aircraftService: AircraftService
 ) : AircraftRepository{
-    override suspend fun getAircrafts(): UIState<List<AircraftEntity>> {
+    override suspend fun getAircraft(): UIState<List<AircraftEntity>> {
         return try {
-            var aircrafts = aircraftDAO.getAllAircrafts()
-            if(aircrafts.isEmpty()){
+            var aircraft = aircraftDAO.getAllAircraft()
+            if(aircraft.isEmpty()){
                 val response = aircraftService
-                    .getAircrafts(BuildConfig.AVIATION_EDGE_API_KEY)
-                println(response.code())
+                    .getAircraft(BuildConfig.AVIATION_EDGE_API_KEY)
                 if(response.isSuccessful){
                     val aircraftDTOList = response.body()
                     if(!aircraftDTOList.isNullOrEmpty()){
                         aircraftDAO.insertAll(aircraftDTOList.toDomainModelList())
-                        aircrafts = aircraftDAO.getAllAircrafts()
-                        UIState.Success(aircrafts)
+                        aircraft = aircraftDAO.getAllAircraft()
+                        UIState.Success(aircraft)
                     }
                 }else{
                     return when(response.code()){
@@ -37,7 +36,7 @@ class AircraftRepositoryImpl @Inject constructor(
                     }
                 }
             }
-            UIState.Success(aircrafts)
+            UIState.Success(aircraft)
         }catch (e: IOException) {
             UIState.Error.NetworkError("Network error: ${e.message}")
         }catch (e:Exception){
