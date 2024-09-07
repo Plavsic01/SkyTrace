@@ -65,7 +65,7 @@ This token is required for the Mapbox SDK to access the map services in the appl
    ```
 2. Navigate to the project directory:
    ```sh
-   cd aircraft-tracker
+   cd SkyTrace
    ```
 3. Create the `gradle.properties` file as described above.
 4. Open the project in Android Studio and run it on an emulator or a physical device.
